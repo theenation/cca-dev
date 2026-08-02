@@ -1,0 +1,27 @@
+---
+import Layout from '../layouts/Layout.astro'
+import PageHero from '../components/PageHero.astro'
+import SectionHeading from '../components/SectionHeading.astro'
+import SmartImage from '../components/SmartImage.astro'
+import { getPlacementPartners, mediaUrl } from '../lib/cms'
+
+const partners = await getPlacementPartners()
+---
+
+<Layout
+  title="Placement Opportunities | CCA - Certified College of Accountancy"
+  description="We have joined hands with different companies to provide skill development training and placement opportunities to our students."
+>
+  <PageHero title="Placement Opportunities" subtitle="We have joined hands with different companies to provide skill development training and placement opportunities to our students." />
+
+  <section class="mx-auto max-w-7xl px-6 py-20">
+    <SectionHeading title="Our Placement" accent="Partners" />
+    <div class="mt-14 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5">
+      {partners.map((p, i) => (
+        <a href={p.url || '#'} target="_blank" rel="noopener" class="grid h-32 place-items-center rounded-xl border border-line bg-white p-4 transition-shadow hover:shadow-lg">
+          <SmartImage src={mediaUrl(p.logo, '')} alt={p.name} class="max-h-20 max-w-full object-contain" loading={i < 5 ? 'eager' : 'lazy'} />
+        </a>
+      ))}
+    </div>
+  </section>
+</Layout>

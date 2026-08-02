@@ -1,0 +1,64 @@
+---
+import Icon from './Icon.astro'
+import SmartImage from './SmartImage.astro'
+import { getSiteSettings, getCourses, mediaUrl } from '../lib/cms'
+
+const settings = await getSiteSettings()
+const courses = await getCourses()
+const logoUrl = mediaUrl(settings.logo, '/images/logo.png')
+---
+
+<footer class="bg-secondary text-white">
+  <div class="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-3">
+    <div>
+      <SmartImage src={logoUrl} alt={settings.siteName} class="h-24 w-auto" />
+      <p class="mt-4 text-sm italic text-white/70">"{settings.tagline}"</p>
+      <div class="mt-6 space-y-3 text-sm text-white/80">
+        <p class="flex items-center gap-3"><Icon name="location" class="h-4 w-4 shrink-0" /> {settings.address}</p>
+        <p class="flex items-center gap-3"><Icon name="mail" class="h-4 w-4 shrink-0" /> {settings.email}</p>
+        <p class="flex items-center gap-3">
+          <Icon name="phone" class="h-4 w-4 shrink-0" />
+          {settings.phones?.map((p: { number: string }) => p.number).join(' , ')}
+        </p>
+      </div>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-white">Courses</h3>
+      <ul class="mt-4 space-y-3 text-sm text-white/80">
+        {courses.map((c) => (
+          <li><a href={`/we-offer/${c.slug}`} class="hover:text-accent">{c.title}</a></li>
+        ))}
+      </ul>
+    </div>
+
+    <div>
+      <h3 class="text-lg font-bold text-white">Accreditation</h3>
+      <div class="mt-4 grid grid-cols-2 gap-4">
+        <SmartImage src="/images/reputation.png" alt="ACCA Approved Employer" class="h-20 w-20 object-contain brightness-0 invert" />
+        <SmartImage src="/images/degree.png" alt="Licensed CBE Centre" class="h-20 w-20 object-contain brightness-0 invert" />
+        <SmartImage src="/images/verified.png" alt="ACCA Approved Learning Partner" class="h-20 w-20 object-contain brightness-0 invert" />
+        <SmartImage src="/images/iso.png" alt="ISO 9001:2015 Certified College" class="h-20 w-20 object-contain brightness-0 invert" />
+      </div>
+    </div>
+  </div>
+
+  <div class="border-t border-white/10">
+    <div class="mx-auto flex max-w-7xl flex-col items-center justify-between gap-4 px-6 py-6 text-sm text-white/70 md:flex-row">
+      <p>Copyright &copy; {new Date().getFullYear()} CCA Nepal. All rights reserved.</p>
+      <div class="flex items-center gap-3">
+        {settings.socials?.map((s: { platform: string; url: string }) => (
+          <a
+            href={s.url}
+            target="_blank"
+            rel="noopener"
+            class="grid h-9 w-9 place-items-center rounded-full border border-white/20 hover:bg-accent hover:border-accent"
+            aria-label={s.platform}
+          >
+            <Icon name={s.platform} class="h-4 w-4" />
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+</footer>

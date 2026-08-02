@@ -1,0 +1,39 @@
+---
+import Layout from '../layouts/Layout.astro'
+import PageHero from '../components/PageHero.astro'
+import { getCourses } from '../lib/cms'
+
+const courses = await getCourses()
+---
+
+<Layout
+  title="Enroll Your Course | CCA - Certified College of Accountancy"
+  description="Join us on this journey! Fill in your details and our admissions team will reach out to you."
+>
+  <PageHero title="Enroll Your Course" subtitle="Join us on this journey! Fill in your details and our admissions team will reach out to you." />
+
+  <section class="mx-auto max-w-3xl px-6 py-20">
+    <form id="enroll-form" class="space-y-4 rounded-2xl border border-line p-8 shadow-sm">
+      <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off" />
+      <div class="grid gap-4 sm:grid-cols-2">
+        <input type="text" name="name" required placeholder="Full Name" class="w-full min-w-0 rounded-md border border-line px-4 py-3 text-sm" />
+        <input type="text" name="phone" placeholder="Phone No." class="w-full min-w-0 rounded-md border border-line px-4 py-3 text-sm" />
+      </div>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <input type="email" name="email" required placeholder="Email Address" class="w-full min-w-0 rounded-md border border-line px-4 py-3 text-sm" />
+        <select name="course" class="w-full min-w-0 rounded-md border border-line px-4 py-3 text-sm text-ink/70">
+          <option value="">Select a Course</option>
+          {courses.map((c) => <option value={c.slug}>{c.title}</option>)}
+        </select>
+      </div>
+      <textarea name="message" placeholder="Any message" rows={5} class="w-full rounded-md border border-line px-4 py-3 text-sm"></textarea>
+      <button type="submit" class="btn-accent w-full">Apply Now</button>
+      <p data-form-status></p>
+    </form>
+    <script>
+      import { initEnquiryForm } from '../lib/forms.client'
+      const form = document.getElementById('enroll-form')
+      if (form instanceof HTMLFormElement) initEnquiryForm(form, 'enroll')
+    </script>
+  </section>
+</Layout>

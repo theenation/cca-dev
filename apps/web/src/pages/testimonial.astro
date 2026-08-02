@@ -1,0 +1,36 @@
+---
+import Layout from '../layouts/Layout.astro'
+import PageHero from '../components/PageHero.astro'
+import SectionHeading from '../components/SectionHeading.astro'
+import TestimonialCard from '../components/TestimonialCard.astro'
+import { getTestimonials } from '../lib/cms'
+
+const testimonials = await getTestimonials()
+const students = testimonials.filter((t) => t.group !== 'alumni')
+const alumni = testimonials.filter((t) => t.group === 'alumni')
+---
+
+<Layout
+  title="Testimonial | CCA - Certified College of Accountancy"
+  description="Hear directly from CCA students and alumni about their journey towards ACCA success."
+>
+  <PageHero title="Testimonial" subtitle="Hear directly from CCA students and alumni about their journey towards ACCA success." />
+
+  <section class="mx-auto max-w-7xl px-6 py-20">
+    <SectionHeading title="Know What Our" accent="Student Says" />
+    <div class="mt-14 grid gap-8 md:grid-cols-3">
+      {students.map((t) => <TestimonialCard testimonial={t} />)}
+    </div>
+  </section>
+
+  {alumni.length > 0 && (
+    <section class="bg-cloud py-20">
+      <div class="mx-auto max-w-7xl px-6">
+        <SectionHeading title="Our" accent="Alumni" />
+        <div class="mt-14 grid gap-8 md:grid-cols-3">
+          {alumni.map((t) => <TestimonialCard testimonial={t} />)}
+        </div>
+      </div>
+    </section>
+  )}
+</Layout>

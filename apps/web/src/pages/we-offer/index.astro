@@ -1,0 +1,45 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import PageHero from '../../components/PageHero.astro'
+import SectionHeading from '../../components/SectionHeading.astro'
+import CourseCard from '../../components/CourseCard.astro'
+import { getCourses } from '../../lib/cms'
+
+const courses = await getCourses()
+const undergraduate = courses.filter((c) => c.category === 'undergraduate')
+const diploma = courses.filter((c) => c.category === 'diploma')
+const graduate = courses.filter((c) => c.category === 'graduate')
+---
+
+<Layout
+  title="We Offer | CCA - Certified College of Accountancy"
+  description="From undergraduate and diploma programs to graduate courses, we provide comprehensive education in accounting and finance."
+>
+  <PageHero
+    title="Featured Course"
+    subtitle="From undergraduate and diploma programs to graduate courses, we provide comprehensive education in accounting and finance, ensuring every student finds their path to success."
+  />
+
+  <section class="mx-auto max-w-7xl px-6 py-20">
+    <SectionHeading title="Our" accent="Undergraduate Courses" subtitle="Discover a world of opportunities with CCA's undergraduate courses designed to propel you towards a successful career in accounting and finance." />
+    <div class="mt-14 grid gap-8 md:grid-cols-3">
+      {undergraduate.map((c, i) => <CourseCard course={c} loading={i < 3 ? 'eager' : 'lazy'} />)}
+    </div>
+  </section>
+
+  <section class="bg-cloud py-20">
+    <div class="mx-auto max-w-7xl px-6">
+      <SectionHeading title="Our" accent="Diploma Courses" subtitle="Fast-track certifications designed to sharpen your technical accounting and reporting skills." />
+      <div class="mt-14 grid gap-8 md:grid-cols-3">
+        {diploma.map((c) => <CourseCard course={c} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-6 py-20">
+    <SectionHeading title="Our" accent="Graduate Courses" subtitle="Globally recognized professional qualifications that open doors to careers in Nepal and abroad." />
+    <div class="mt-14 grid gap-8 md:grid-cols-3">
+      {graduate.map((c) => <CourseCard course={c} />)}
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,26 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import PageHero from '../../components/PageHero.astro'
+import SectionHeading from '../../components/SectionHeading.astro'
+import PostCard from '../../components/PostCard.astro'
+import { getPosts } from '../../lib/cms'
+
+const articles = await getPosts('article')
+---
+
+<Layout
+  title="Articles | CCA - Certified College of Accountancy"
+  description="In-depth guides and resources for ACCA and accounting students."
+>
+  <PageHero title="Articles" subtitle="In-depth guides and resources for ACCA and accounting students." />
+  <section class="mx-auto max-w-7xl px-6 py-20">
+    <SectionHeading title="Our" accent="Articles" />
+    {articles.length > 0 ? (
+      <div class="mt-14 grid gap-8 md:grid-cols-3">
+        {articles.map((p, i) => <PostCard post={p} basePath="/articles" loading={i < 3 ? 'eager' : 'lazy'} />)}
+      </div>
+    ) : (
+      <p class="mt-14 text-center text-ink/70">No articles published yet. Check back soon!</p>
+    )}
+  </section>
+</Layout>

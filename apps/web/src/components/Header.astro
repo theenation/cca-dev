@@ -1,0 +1,152 @@
+---
+import Icon from './Icon.astro'
+import SmartImage from './SmartImage.astro'
+import { getSiteSettings, getCourses, mediaUrl } from '../lib/cms'
+
+const settings = await getSiteSettings()
+const courses = await getCourses()
+const logoUrl = mediaUrl(settings.logo, '/images/logo.png')
+
+const nav = [
+  { label: 'Home', href: '/' },
+  {
+    label: 'About',
+    href: '/about',
+    children: [
+      { label: 'Mission and Vision', href: '/about#mission' },
+      { label: 'Chairman Message', href: '/about#chairman' },
+      { label: 'Board of Director', href: '/our-team#board' },
+      { label: 'Faculty Member', href: '/our-team#faculty' },
+      { label: 'Management Team', href: '/our-team#management' },
+      { label: 'Accreditation And Membership', href: '/accreditation-and-membership' },
+    ],
+  },
+  {
+    label: 'We Offer',
+    href: '/we-offer',
+    children: courses.map((c) => ({ label: c.title, href: `/we-offer/${c.slug}` })),
+  },
+  {
+    label: 'Student Section',
+    href: '/student-section',
+    children: [
+      { label: 'Skills/Professional Rank Holders', href: '/student-section#rank-holders' },
+      { label: 'On Demand CBE Rank Holders', href: '/student-section#cbe-rank' },
+      { label: 'Student Complain Section', href: '/student-section#complain' },
+    ],
+  },
+  {
+    label: 'CCA E-Learning',
+    href: settings.elearningLoginUrl || '#',
+    children: [
+      { label: 'Log In', href: settings.elearningLoginUrl || '#' },
+      { label: 'Register', href: settings.elearningRegisterUrl || '#' },
+    ],
+  },
+  {
+    label: 'Updates',
+    href: '/newsfeed',
+    children: [
+      { label: 'Newsfeed', href: '/newsfeed' },
+      { label: 'Articles', href: '/articles' },
+      { label: 'Blogs', href: '/blogs' },
+      { label: 'Events', href: '/events' },
+    ],
+  },
+  { label: 'Contact', href: '/contact' },
+]
+---
+
+<header class="sticky top-0 z-50 bg-white shadow-sm">
+  <div class="hidden bg-secondary text-xs text-white/90 md:block">
+    <div class="mx-auto flex max-w-7xl items-center justify-between px-6 py-2">
+      <div class="flex items-center gap-6">
+        <a href={`mailto:${settings.email}`} class="flex items-center gap-2 hover:text-accent">
+          <Icon name="mail" class="h-4 w-4" />
+          {settings.email}
+        </a>
+        <span class="flex items-center gap-2">
+          <Icon name="phone" class="h-4 w-4" />
+          {settings.phones?.map((p: { number: string }) => p.number).join(' , ')}
+        </span>
+      </div>
+      <div class="flex items-center gap-3">
+        {settings.socials?.map((s: { platform: string; url: string }) => (
+          <a
+            href={s.url}
+            target="_blank"
+            rel="noopener"
+            class="grid h-7 w-7 place-items-center rounded-full bg-white/10 hover:bg-accent"
+            aria-label={s.platform}
+          >
+            <Icon name={s.platform} class="h-3.5 w-3.5" />
+          </a>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <div class="mx-auto flex max-w-7xl items-center justify-between gap-6 px-6 py-3">
+    <a href="/" class="flex shrink-0 items-center">
+      <SmartImage src={logoUrl} alt={settings.siteName} class="h-16 w-auto" loading="eager" />
+    </a>
+
+    <nav class="hidden items-center gap-1 lg:flex">
+      {nav.map((item) => (
+        <div class="group relative">
+          <a
+            href={item.href}
+            class="flex items-center gap-1 px-3 py-2 text-sm font-semibold text-secondary hover:text-primary"
+          >
+            {item.label}
+            {item.children && <Icon name="chevronDown" class="h-3.5 w-3.5" />}
+          </a>
+          {item.children && (
+            <div class="invisible absolute left-0 top-full min-w-64 rounded-lg border border-line bg-white py-2 opacity-0 shadow-xl transition-all duration-150 group-hover:visible group-hover:opacity-100">
+              {item.children.map((child) => (
+                <a href={child.href} class="block px-4 py-2 text-sm text-ink hover:bg-cloud hover:text-primary">
+                  {child.label}
+                </a>
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
+    </nav>
+
+    <div class="flex items-center gap-3">
+      <a href="/enroll-course" class="btn-accent hidden md:inline-flex">Apply Online</a>
+      <button id="mobile-menu-btn" class="grid h-10 w-10 place-items-center rounded-md border border-line lg:hidden" aria-label="Open menu">
+        <svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M4 6h16M4 12h16M4 18h16" stroke-linecap="round" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <div id="mobile-menu" class="hidden border-t border-line bg-white lg:hidden">
+    <div class="max-h-[70vh] overflow-y-auto px-4 py-3">
+      {nav.map((item) => (
+        <details class="border-b border-line py-2">
+          <summary class="cursor-pointer list-none py-1 text-sm font-semibold text-secondary">
+            <a href={item.href}>{item.label}</a>
+          </summary>
+          {item.children && (
+            <div class="ml-3 mt-1 flex flex-col gap-1">
+              {item.children.map((child) => (
+                <a href={child.href} class="py-1 text-sm text-ink">{child.label}</a>
+              ))}
+            </div>
+          )}
+        </details>
+      ))}
+      <a href="/enroll-course" class="btn-accent mt-3 w-full">Apply Online</a>
+    </div>
+  </div>
+</header>
+
+<script>
+  const btn = document.getElementById('mobile-menu-btn')
+  const menu = document.getElementById('mobile-menu')
+  btn?.addEventListener('click', () => menu?.classList.toggle('hidden'))
+</script>

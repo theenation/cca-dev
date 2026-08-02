@@ -1,0 +1,51 @@
+---
+import Header from '../components/Header.astro'
+import Footer from '../components/Footer.astro'
+import Icon from '../components/Icon.astro'
+import { getSiteSettings } from '../lib/cms'
+import '../styles/global.css'
+
+interface Props {
+  title: string
+  description?: string
+}
+
+const { title, description = 'CCA - Certified College of Accountancy is a leading ACCA college in Kathmandu, Nepal.' } = Astro.props
+const settings = await getSiteSettings()
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="/images/logo.png" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Mulish:wght@400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body class="antialiased">
+    <Header />
+    <main>
+      <slot />
+    </main>
+    <Footer />
+
+    {settings.whatsapp && (
+      <a
+        href={`https://api.whatsapp.com/send?phone=${settings.whatsapp}`}
+        target="_blank"
+        rel="noopener"
+        class="fixed bottom-6 left-6 z-50 grid h-14 w-14 place-items-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform hover:scale-105"
+        aria-label="Chat on WhatsApp"
+      >
+        <Icon name="whatsapp" class="h-7 w-7" />
+      </a>
+    )}
+  </body>
+</html>

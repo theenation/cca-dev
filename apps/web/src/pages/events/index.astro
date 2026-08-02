@@ -1,0 +1,22 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import PageHero from '../../components/PageHero.astro'
+import SectionHeading from '../../components/SectionHeading.astro'
+import PostCard from '../../components/PostCard.astro'
+import { getPosts } from '../../lib/cms'
+
+const events = await getPosts('event')
+---
+
+<Layout
+  title="Events | CCA - Certified College of Accountancy"
+  description="Stay updated on our latest happenings, from academic seminars to cultural celebrations."
+>
+  <PageHero title="Our Events" subtitle="Stay updated on our latest happenings, from academic seminars to cultural celebrations." />
+  <section class="mx-auto max-w-7xl px-6 py-20">
+    <SectionHeading title="Checkout Our" accent="Events" />
+    <div class="mt-14 grid gap-8 md:grid-cols-3">
+      {events.map((p, i) => <PostCard post={p} basePath="/events" loading={i < 3 ? 'eager' : 'lazy'} />)}
+    </div>
+  </section>
+</Layout>

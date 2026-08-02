@@ -1,0 +1,250 @@
+---
+import Layout from '../layouts/Layout.astro'
+import Icon from '../components/Icon.astro'
+import SectionHeading from '../components/SectionHeading.astro'
+import CourseCard from '../components/CourseCard.astro'
+import PostCard from '../components/PostCard.astro'
+import TestimonialCard from '../components/TestimonialCard.astro'
+import ZigZag from '../components/ZigZag.astro'
+import SmartImage from '../components/SmartImage.astro'
+import {
+  getHomePage,
+  getCourses,
+  getTestimonials,
+  getPosts,
+  getPlacementPartners,
+  mediaUrl,
+} from '../lib/cms'
+import { renderContent } from '../lib/content'
+
+const home = await getHomePage()
+const courses = await getCourses()
+const testimonials = await getTestimonials()
+const blogs = (await getPosts('blog')).slice(0, 3)
+const events = (await getPosts('event')).slice(0, 3)
+const newsfeed = (await getPosts('newsfeed')).slice(0, 3)
+const partners = await getPlacementPartners()
+
+const heroImg = mediaUrl(home.heroImage, '/images/hero-bg.webp')
+const aboutImg = mediaUrl(home.aboutImage, '/images/reception.webp')
+const achievementImg = mediaUrl(home.achievementImage, '/images/conference.webp')
+
+const featuredCourses = courses.filter((c) => c.featured).slice(0, 3)
+---
+
+<Layout title="ACCA College in Kathmandu, Nepal | Study ACCA at CCA" description={home.heroSubtitle}>
+  <!-- Hero -->
+  <section class="relative overflow-hidden bg-secondary pb-28 pt-28 text-white">
+    {home.heroVideoId ? (
+      <div class="absolute inset-0 overflow-hidden">
+        <iframe
+          src={`https://www.youtube.com/embed/${home.heroVideoId}?autoplay=1&mute=1&loop=1&playlist=${home.heroVideoId}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&disablekb=1`}
+          class="pointer-events-none absolute left-1/2 top-1/2 h-[56.25vw] min-h-full w-[177.78vh] min-w-full -translate-x-1/2 -translate-y-1/2"
+          allow="autoplay; encrypted-media"
+          title="CCA campus video"
+        ></iframe>
+      </div>
+    ) : (
+      <SmartImage src={heroImg} alt="" class="absolute inset-0 h-full w-full object-cover opacity-40" loading="eager" />
+    )}
+    <div class="absolute inset-0 bg-gradient-to-r from-secondary via-secondary/90 to-secondary/60"></div>
+    <div class="relative mx-auto max-w-7xl px-6">
+      <div class="max-w-2xl">
+        <h1 class="text-4xl font-extrabold leading-tight text-white md:text-5xl">{home.heroTitle}</h1>
+        <p class="mt-6 text-white/85">{home.heroSubtitle}</p>
+        <a href={home.heroCtaLink || '/about'} class="btn-accent mt-8">{home.heroCtaText || 'Learn More'}</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Highlights -->
+  <section class="relative z-10 mx-auto -mt-14 max-w-6xl px-6">
+    <div class="grid gap-px overflow-hidden rounded-2xl bg-line shadow-xl sm:grid-cols-2 lg:grid-cols-4">
+      {home.highlights?.map((h, i) => (
+        <div class="flex items-start gap-4 bg-white p-6">
+          <span class={`grid h-12 w-12 shrink-0 place-items-center rounded-full ${i % 2 === 0 ? 'bg-primary/10 text-primary' : 'bg-accent/10 text-accent'}`}>
+            <Icon name={h.icon || 'award'} class="h-6 w-6" />
+          </span>
+          <div>
+            <h3 class="font-bold text-secondary">{h.title}</h3>
+            <p class="mt-1 text-xs text-muted">{h.description}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- About -->
+  <section class="mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-2 lg:items-center">
+    <div class="relative">
+      <SmartImage src={aboutImg} alt="CCA campus" class="w-full rounded-2xl object-cover shadow-lg" />
+      <div class="mt-6 flex divide-x divide-line rounded-xl bg-white p-4 shadow">
+        {home.aboutStats?.map((s) => (
+          <div class="flex-1 px-4 text-center">
+            <p class="text-2xl font-extrabold text-primary">{s.value}%</p>
+            <p class="text-xs text-muted">{s.label}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+    <div>
+      <ZigZag />
+      <h2 class="mt-3 text-3xl font-bold text-secondary md:text-4xl">
+        {home.aboutTitle?.split(' ')[0]} <span class="text-accent">{home.aboutTitle?.split(' ').slice(1).join(' ')}</span>
+      </h2>
+      <div set:html={renderContent(home.aboutText)} />
+      <a href="/about" class="btn-primary mt-8">About Us</a>
+    </div>
+  </section>
+
+  <!-- Featured courses -->
+  <section class="bg-cloud py-20">
+    <div class="mx-auto max-w-7xl px-6">
+      <SectionHeading title="Most Featured" accent="Courses" subtitle="Our course empowers minds, expanding knowledge's domain, unlocking potential, paving the way for success's reign." />
+      <div class="mt-14 grid gap-8 md:grid-cols-3">
+        {featuredCourses.map((c) => <CourseCard course={c} />)}
+      </div>
+      <div class="mt-12 text-center">
+        <a href="/we-offer" class="btn-accent">View All Courses</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Categories + booking form -->
+  <section class="mx-auto max-w-7xl px-6 py-20">
+    <SectionHeading title="Our Best" accent="Categories" align="left" />
+    <div class="mt-6">
+      <a href="/we-offer" class="btn-accent">More Categories</a>
+    </div>
+    <div class="mt-10 grid gap-8 lg:grid-cols-3 lg:items-start">
+      <div class="grid gap-6 sm:grid-cols-2 lg:col-span-2">
+        {home.categories?.map((cat) => (
+          <div class="rounded-2xl border-2 border-dashed border-line p-10 text-center">
+            <div class="mx-auto grid h-20 w-20 place-items-center rounded-full bg-cloud">
+              <Icon name="award" class="h-8 w-8 text-primary" />
+            </div>
+            <h3 class="mt-5 text-xl font-bold text-secondary">{cat.title}</h3>
+            <p class="mt-1 text-primary">{cat.courseCount} Course Available</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="rounded-3xl bg-cloud p-8">
+        <p class="text-right text-sm font-semibold text-primary">{home.intakeLabel}</p>
+        <h2 class="mt-2 text-2xl font-bold text-secondary">Get your Courses ! <span class="text-accent">Book Your Seat Now.</span></h2>
+        <form id="book-seat-form" class="mt-6 grid gap-4">
+          <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off" />
+          <input type="text" name="name" required placeholder="Full Name" class="rounded-md border border-line bg-white px-4 py-3 text-sm" />
+          <input type="text" name="phone" placeholder="Phone No." class="rounded-md border border-line bg-white px-4 py-3 text-sm" />
+          <input type="email" name="email" required placeholder="Email Address" class="rounded-md border border-line bg-white px-4 py-3 text-sm" />
+          <input type="text" name="subject" placeholder="Your Subject" class="rounded-md border border-line bg-white px-4 py-3 text-sm" />
+          <button type="submit" class="btn-primary w-full">Book Seat</button>
+          <p data-form-status></p>
+        </form>
+        <script>
+          import { initEnquiryForm } from '../lib/forms.client'
+          const form = document.getElementById('book-seat-form')
+          if (form instanceof HTMLFormElement) initEnquiryForm(form, 'book-seat')
+        </script>
+      </div>
+    </div>
+  </section>
+
+  <!-- Achievement -->
+  <section class="relative overflow-hidden bg-secondary py-20 text-white">
+    <div class="mx-auto grid max-w-7xl gap-10 px-6 lg:grid-cols-2 lg:items-center">
+      <div class="relative overflow-hidden rounded-2xl">
+        <SmartImage src={achievementImg} alt="CCA achievement" class="h-96 w-full object-cover" />
+        {home.achievementVideoUrl && (
+          <a href={home.achievementVideoUrl} target="_blank" rel="noopener" aria-label="Watch achievement video" class="absolute inset-0 grid place-items-center">
+            <span class="grid h-16 w-16 place-items-center rounded-full bg-primary/90"><Icon name="play" class="h-7 w-7 text-white" /></span>
+          </a>
+        )}
+      </div>
+      <div class="rounded-2xl bg-white p-10 text-ink">
+        <ZigZag />
+        <h2 class="mt-3 text-3xl font-bold text-secondary">{home.achievementTitle?.split(' ')[0]} <span class="text-accent">{home.achievementTitle?.split(' ').slice(1).join(' ')}</span></h2>
+        <p class="mt-4 text-ink/80">{home.achievementText}</p>
+        <a href="/contact" class="btn-accent mt-8">Join Us Now</a>
+      </div>
+    </div>
+    <div class="mx-auto mt-16 max-w-7xl px-6 text-center">
+      <p class="text-5xl font-extrabold">{new Date().getFullYear() - (home.sinceYear || 2006)}+</p>
+      <p class="mt-2 text-white/70">Years Since {home.sinceYear}</p>
+    </div>
+  </section>
+
+  <!-- Blog -->
+  <section class="bg-white py-20">
+    <div class="mx-auto max-w-7xl px-6">
+      <SectionHeading title="Checkout Our" accent="Blog" />
+      <div class="mt-14 grid gap-8 md:grid-cols-3">
+        {blogs.map((p) => <PostCard post={p} basePath="/blogs" />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="bg-cloud py-20">
+    <div class="mx-auto max-w-7xl px-6">
+      <SectionHeading title="Review's From" accent="Students" subtitle="Before you study, let reviews light your path; after you learn, share your success story." />
+      <div class="mt-14 grid gap-8 md:grid-cols-3">
+        {testimonials.slice(0, 3).map((t) => <TestimonialCard testimonial={t} />)}
+      </div>
+      <div class="mt-12 text-center">
+        <a href="/testimonial" class="btn-accent">More Reviews Now</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Events -->
+  <section class="bg-white py-20">
+    <div class="mx-auto max-w-7xl px-6">
+      <SectionHeading title="Checkout Our" accent="Events" subtitle="Stay updated on our latest happenings, from academic seminars to cultural celebrations, offering exciting opportunities for engagement, networking, and enrichment." />
+      <div class="mt-14 grid gap-8 md:grid-cols-3">
+        {events.map((p) => <PostCard post={p} basePath="/events" />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="relative overflow-hidden bg-secondary py-24 text-white">
+    <SmartImage src="/images/conference.webp" alt="" class="absolute inset-0 h-full w-full object-cover opacity-25" />
+    <div class="absolute inset-0 bg-secondary/80"></div>
+    <div class="relative mx-auto max-w-3xl px-6 text-center">
+      <ZigZag class="mx-auto h-4 w-20 text-white" />
+      <h2 class="mt-3 text-3xl font-bold text-white md:text-4xl">
+        Unbounded Education, <span class="text-accent">Infinite Opportunities!</span>
+      </h2>
+      <p class="mt-4 text-white/80">{home.ctaText}</p>
+      <a href="/contact" class="btn-accent mt-8">Message Now</a>
+    </div>
+  </section>
+
+  <!-- Newsfeed -->
+  <section class="bg-white py-20">
+    <div class="mx-auto max-w-7xl px-6">
+      <SectionHeading title="Checkout Our" accent="Newsfeed" subtitle="Discover compelling stories, achievements, and announcements, keeping you connected with the pulse of our academic community." />
+      <div class="mt-14 grid gap-8 md:grid-cols-3">
+        {newsfeed.map((p) => <PostCard post={p} basePath="/newsfeed" />)}
+      </div>
+    </div>
+  </section>
+
+  <!-- Placement partners -->
+  <section class="bg-cloud py-20">
+    <div class="mx-auto max-w-7xl px-6">
+      <SectionHeading title="Our Placement" accent="Partners" subtitle="We have now joined hands with different companies to provide skill development training and placement opportunities to our students" />
+      <div class="mt-14 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5">
+        {partners.map((p) => (
+          <div class="grid h-32 place-items-center rounded-xl border border-line bg-white p-4">
+            <SmartImage src={mediaUrl(p.logo, '')} alt={p.name} class="max-h-20 max-w-full object-contain" />
+          </div>
+        ))}
+      </div>
+      <div class="mt-12 text-center">
+        <a href="/placement-opportunities" class="btn-accent">View More</a>
+      </div>
+    </div>
+  </section>
+</Layout>

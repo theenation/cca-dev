@@ -1,0 +1,35 @@
+---
+// Wraps astro:assets Image so callers don't need to branch themselves:
+// remote CMS-hosted images (http/https) get real optimization via `inferSize`.
+// Local /public paths can't be processed by Vite's asset pipeline, so Astro
+// can't infer their size — we read it directly off disk with sharp instead.
+import { Image } from 'astro:assets'
+import path from 'node:path'
+import sharp from 'sharp'
+
+interface Props {
+  src: string
+  alt: string
+  class?: string
+  loading?: 'lazy' | 'eager'
+}
+const { src, alt, class: klass, loading } = Astro.props
+const isRemote = /^https?:\/\//.test(src)
+
+let width = 800
+let height = 600
+if (!isRemote) {
+  const filePath = path.join(process.cwd(), 'public', src)
+  const metadata = await sharp(filePath).metadata()
+  width = metadata.width ?? width
+  height = metadata.height ?? height
+}
+---
+
+{
+  isRemote ? (
+    <Image src={src} alt={alt} class={klass} inferSize loading={loading} />
+  ) : (
+    <Image src={src} alt={alt} class={klass} width={width} height={height} loading={loading} />
+  )
+}

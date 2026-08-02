@@ -1,0 +1,70 @@
+---
+import Layout from '../layouts/Layout.astro'
+import PageHero from '../components/PageHero.astro'
+import Icon from '../components/Icon.astro'
+import { getSiteSettings, getContactPage } from '../lib/cms'
+
+const settings = await getSiteSettings()
+const contact = await getContactPage()
+---
+
+<Layout title="Contact | CCA - Certified College of Accountancy" description={contact.heroSubtitle}>
+  <PageHero title={contact.heroTitle} subtitle={contact.heroSubtitle} />
+
+  <section class="mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-2">
+    <div>
+      <h2 class="text-3xl font-bold text-secondary">{contact.introTitle} <span class="text-accent">{contact.introAccent}</span></h2>
+      <p class="mt-4 text-ink/80">{contact.introText}</p>
+
+      <div class="mt-8 space-y-4">
+        <div class="flex items-center gap-4 rounded-xl bg-cloud p-5">
+          <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-primary text-white"><Icon name="phone" /></span>
+          <div>
+            <p class="font-bold text-secondary">Phone Number :</p>
+            <p class="text-ink/80">{settings.phones?.map((p: { number: string }) => p.number).join(' , ')}</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4 rounded-xl bg-cloud p-5">
+          <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-primary text-white"><Icon name="location" /></span>
+          <div>
+            <p class="font-bold text-secondary">Location Address :</p>
+            <p class="text-ink/80">{settings.address}</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4 rounded-xl bg-cloud p-5">
+          <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-primary text-white"><Icon name="mail" /></span>
+          <div>
+            <p class="font-bold text-secondary">Email Address :</p>
+            <p class="text-ink/80">{settings.email}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <form id="contact-form" class="space-y-4 rounded-2xl border border-line p-8 shadow-sm">
+      <input type="text" name="website" class="hidden" tabindex="-1" autocomplete="off" />
+      <div class="grid gap-4 sm:grid-cols-2">
+        <input type="text" name="name" required placeholder="Full Name" class="rounded-md border border-line px-4 py-3 text-sm" />
+        <input type="text" name="phone" placeholder="Phone No." class="rounded-md border border-line px-4 py-3 text-sm" />
+      </div>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <input type="email" name="email" required placeholder="Email Address" class="rounded-md border border-line px-4 py-3 text-sm" />
+        <input type="text" name="subject" placeholder="Your Subject" class="rounded-md border border-line px-4 py-3 text-sm" />
+      </div>
+      <textarea name="message" placeholder="Any Message" rows={6} class="w-full rounded-md border border-line px-4 py-3 text-sm"></textarea>
+      <button type="submit" class="btn-primary">Send Message</button>
+      <p data-form-status></p>
+    </form>
+    <script>
+      import { initEnquiryForm } from '../lib/forms.client'
+      const form = document.getElementById('contact-form')
+      if (form instanceof HTMLFormElement) initEnquiryForm(form, 'contact')
+    </script>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-6 pb-20">
+    <div class="overflow-hidden rounded-2xl border border-line">
+      <iframe title="CCA Location" src={contact.mapEmbedUrl} class="h-96 w-full" loading="lazy"></iframe>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,131 @@
+---
+import Layout from '../layouts/Layout.astro'
+import PageHero from '../components/PageHero.astro'
+import ZigZag from '../components/ZigZag.astro'
+import SectionHeading from '../components/SectionHeading.astro'
+import TeamCard from '../components/TeamCard.astro'
+import Icon from '../components/Icon.astro'
+import SmartImage from '../components/SmartImage.astro'
+import { getAboutPage, getTeamMembers, mediaUrl } from '../lib/cms'
+import { renderContent } from '../lib/content'
+
+const about = await getAboutPage()
+const board = (await getTeamMembers()).filter((m) => m.group === 'board')
+
+const introImg = mediaUrl(about.introImage, '/images/reception.webp')
+const tourImg = mediaUrl(about.tourImage, '/images/conference.webp')
+const chairmanImg = mediaUrl(about.chairmanImage, '/images/team/govinda-raj-panta.webp')
+---
+
+<Layout title="About Us | CCA - Certified College of Accountancy" description={about.heroSubtitle}>
+  <PageHero title={about.heroTitle} subtitle={about.heroSubtitle} />
+
+  <!-- Intro -->
+  <section class="mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-2 lg:items-center">
+    <div>
+      <ZigZag />
+      <h2 class="mt-3 text-3xl font-bold text-secondary md:text-4xl">
+        {about.introTitle.split(' ')[0]} <span class="text-accent">{about.introTitle.split(' ').slice(1).join(' ')}</span>
+      </h2>
+      <div set:html={renderContent(about.introText)} />
+    </div>
+    <div>
+      <SmartImage src={introImg} alt="CCA" class="w-full rounded-2xl object-cover shadow-lg" />
+      <div class="mt-6 flex divide-x divide-line rounded-xl bg-white p-4 shadow">
+        {about.introStats?.map((s) => (
+          <div class="flex-1 px-4 text-center">
+            <p class="text-2xl font-extrabold text-primary">{s.value}%</p>
+            <p class="text-xs text-muted">{s.label}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- Vision & Mission -->
+  <section class="bg-cloud py-20">
+    <div class="mx-auto grid max-w-7xl gap-14 px-6 lg:grid-cols-2">
+      <div>
+        <SmartImage src="/images/mission-icon.png" alt="Mission" class="mx-auto h-64 w-64 object-contain" />
+      </div>
+      <div class="flex flex-col justify-center gap-8">
+        <div id="mission">
+          <ZigZag />
+          <h3 class="mt-3 text-2xl font-bold text-secondary">{about.missionTitle.split(' ')[0]} <span class="text-accent">{about.missionTitle.split(' ').slice(1).join(' ')}</span></h3>
+          <div set:html={renderContent(about.missionText)} />
+        </div>
+      </div>
+    </div>
+    <div class="mx-auto mt-14 max-w-3xl px-6" id="mission-vision">
+      <ZigZag class="mx-auto" />
+      <h3 class="mt-3 text-center text-2xl font-bold text-secondary">{about.visionTitle.split(' ')[0]} <span class="text-accent">{about.visionTitle.split(' ').slice(1).join(' ')}</span></h3>
+      <div class="[&_p]:text-center" set:html={renderContent(about.visionText)} />
+    </div>
+  </section>
+
+  <!-- Tour -->
+  <section class="mx-auto max-w-7xl px-6 py-20">
+    <div class="grid gap-8 lg:grid-cols-3">
+      <div class="relative overflow-hidden rounded-2xl lg:col-span-2">
+        <SmartImage src={tourImg} alt="College tour" class="h-[420px] w-full object-cover" />
+        <div class="absolute bottom-6 left-6 flex items-center gap-3 rounded-xl bg-secondary/90 px-6 py-4 text-white">
+          <Icon name="award" class="h-8 w-8" />
+          <span class="text-lg font-bold">{about.experienceYears}</span>
+        </div>
+      </div>
+      <div class="flex flex-col justify-center rounded-2xl border border-line p-8">
+        <p class="text-sm font-semibold uppercase tracking-wide text-accent">{about.tourLabel}</p>
+        {about.tourVideoId ? (
+          <div class="relative mt-4 aspect-video w-full overflow-hidden rounded-xl bg-secondary">
+            <button id="tour-video-btn" type="button" class="group absolute inset-0 h-full w-full" aria-label="Play college tour video">
+              <SmartImage src={tourImg} alt="" class="h-full w-full object-cover opacity-60 transition-opacity group-hover:opacity-50" />
+              <span class="absolute inset-0 grid place-items-center">
+                <span class="grid h-14 w-14 place-items-center rounded-full bg-accent text-white transition-transform group-hover:scale-110">
+                  <Icon name="play" class="h-6 w-6" />
+                </span>
+              </span>
+            </button>
+          </div>
+        ) : null}
+        <h3 class="mt-5 text-xl font-bold text-secondary">{about.tourVideoTitle}</h3>
+        <p class="mt-2 text-sm text-ink/70">{about.tourVideoText}</p>
+      </div>
+    </div>
+    <script define:vars={{ videoId: about.tourVideoId }}>
+      const btn = document.getElementById('tour-video-btn')
+      btn?.addEventListener('click', () => {
+        const iframe = document.createElement('iframe')
+        iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`
+        iframe.className = 'h-full w-full'
+        iframe.allow = 'autoplay; encrypted-media; picture-in-picture'
+        iframe.allowFullscreen = true
+        btn.replaceWith(iframe)
+      })
+    </script>
+  </section>
+
+  <!-- Chairman message -->
+  <section class="mx-auto max-w-4xl px-6 pb-20" id="chairman">
+    <ZigZag />
+    <h2 class="mt-3 text-3xl font-bold text-secondary">
+      {about.chairmanMessageTitle.split(' from ')[0]} from <span class="text-accent">{about.chairmanMessageTitle.split(' from ')[1]}</span>
+    </h2>
+    <div class="mt-8 flex flex-col gap-6 sm:flex-row sm:items-start">
+      <SmartImage src={chairmanImg} alt="Chairman" class="h-32 w-32 shrink-0 rounded-full object-cover" />
+      <div class="text-ink/80 [&>p:first-child]:mt-0" set:html={renderContent(about.chairmanMessageText)} />
+    </div>
+  </section>
+
+  <!-- Board of Directors -->
+  <section class="bg-cloud py-20" id="board">
+    <div class="mx-auto max-w-7xl px-6">
+      <div class="flex flex-wrap items-center justify-between gap-6">
+        <SectionHeading title="Board of" accent="Directors" align="left" />
+        <a href="/our-team" class="btn-accent">All Team Member</a>
+      </div>
+      <div class="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+        {board.map((m) => <TeamCard member={m} />)}
+      </div>
+    </div>
+  </section>
+</Layout>

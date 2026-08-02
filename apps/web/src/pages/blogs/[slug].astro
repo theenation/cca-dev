@@ -1,0 +1,28 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import SmartImage from '../../components/SmartImage.astro'
+import { getPosts, mediaUrl } from '../../lib/cms'
+import { renderContent } from '../../lib/content'
+
+export async function getStaticPaths() {
+  const posts = await getPosts('blog')
+  return posts.map((post) => ({ params: { slug: post.slug }, props: { post } }))
+}
+
+const { post } = Astro.props as { post: Awaited<ReturnType<typeof getPosts>>[number] }
+const img = mediaUrl(post.featuredImage, '')
+const date = post.publishedDate
+  ? new Date(post.publishedDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+  : ''
+const contentHtml = renderContent(post.content) || `<p class="mt-4 text-ink/80">${post.excerpt || ''}</p>`
+---
+
+<Layout title={`${post.title} | CCA Blog`} description={post.excerpt}>
+  <section class="mx-auto max-w-3xl px-6 py-16">
+    <p class="text-sm text-muted">{date}</p>
+    <h1 class="mt-2 text-3xl font-extrabold text-secondary md:text-4xl">{post.title}</h1>
+    {img && <SmartImage src={img} alt={post.title} class="mt-8 w-full rounded-2xl object-cover" />}
+    <article class="prose mt-8 max-w-none" set:html={contentHtml} />
+    <a href="/blogs" class="btn-primary mt-10 inline-flex">&larr; Back to Blogs</a>
+  </section>
+</Layout>

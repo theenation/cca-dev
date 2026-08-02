@@ -1,0 +1,36 @@
+---
+import { mediaUrl } from '../lib/cms'
+import SmartImage from './SmartImage.astro'
+
+interface Props {
+  post: {
+    slug: string
+    title: string
+    excerpt?: string
+    featuredImage?: unknown
+    publishedDate?: string
+    type?: string
+  }
+  basePath?: string
+  loading?: 'lazy' | 'eager'
+}
+const { post, basePath = '/blogs', loading } = Astro.props
+const img = mediaUrl(post.featuredImage as never, '')
+const date = post.publishedDate
+  ? new Date(post.publishedDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+  : ''
+---
+
+<article class="flex flex-col overflow-hidden rounded-2xl border border-line bg-white shadow-sm transition-shadow hover:shadow-xl">
+  <a href={`${basePath}/${post.slug}`} aria-label={post.title} class="block h-52 w-full overflow-hidden bg-gradient-to-b from-white to-gray-300">
+    {img && <SmartImage src={img} alt={post.title} class="h-full w-full object-cover" loading={loading} />}
+  </a>
+  <div class="flex flex-1 flex-col p-6">
+    <h3 class="text-lg font-bold text-secondary">
+      <a href={`${basePath}/${post.slug}`} class="hover:text-primary">{post.title}</a>
+    </h3>
+    {post.excerpt && <p class="mt-3 flex-1 text-sm text-ink/80 line-clamp-4">{post.excerpt}</p>}
+    <a href={`${basePath}/${post.slug}`} class="mt-4 text-sm font-semibold text-primary hover:text-accent">Read More »</a>
+    {date && <p class="mt-4 border-t border-line pt-3 text-xs text-muted">{date} &bull; No Comments</p>}
+  </div>
+</article>

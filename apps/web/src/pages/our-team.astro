@@ -1,0 +1,42 @@
+---
+import Layout from '../layouts/Layout.astro'
+import PageHero from '../components/PageHero.astro'
+import SectionHeading from '../components/SectionHeading.astro'
+import TeamCard from '../components/TeamCard.astro'
+import { getTeamMembers } from '../lib/cms'
+
+const team = await getTeamMembers()
+const board = team.filter((m) => m.group === 'board')
+const management = team.filter((m) => m.group === 'management')
+const faculty = team.filter((m) => m.group === 'faculty')
+---
+
+<Layout
+  title="Our Team | CCA - Certified College of Accountancy"
+  description="Meet the dedicated professionals leading CCA towards excellence in ACCA education."
+>
+  <PageHero title="Our Team" subtitle="Meet the dedicated professionals leading CCA towards excellence in ACCA education." />
+
+  <section class="mx-auto max-w-7xl px-6 py-20" id="board">
+    <SectionHeading title="Board of" accent="Directors" />
+    <div class="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+      {board.map((m, i) => <TeamCard member={m} loading={i < 3 ? 'eager' : 'lazy'} />)}
+    </div>
+  </section>
+
+  <section class="bg-cloud py-20" id="Management_Team">
+    <div class="mx-auto max-w-7xl px-6">
+      <SectionHeading title="Our" accent="Management team" />
+      <div class="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-3">
+        {management.map((m) => <TeamCard member={m} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="mx-auto max-w-7xl px-6 py-20" id="Faculty_Member">
+    <SectionHeading title="Our Faculty" accent="Member" />
+    <div class="mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4">
+      {faculty.map((m) => <TeamCard member={m} />)}
+    </div>
+  </section>
+</Layout>

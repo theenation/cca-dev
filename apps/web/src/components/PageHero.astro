@@ -1,0 +1,19 @@
+---
+import SmartImage from './SmartImage.astro'
+
+interface Props {
+  title: string
+  subtitle?: string
+  image?: string
+}
+const { title, subtitle, image = '/images/hero-bg.webp' } = Astro.props
+---
+
+<section class="relative overflow-hidden bg-secondary py-24 text-center text-white">
+  <SmartImage src={image} alt="" class="absolute inset-0 h-full w-full object-cover opacity-30" loading="eager" />
+  <div class="absolute inset-0 bg-gradient-to-br from-primary/90 to-secondary/90"></div>
+  <div class="relative mx-auto max-w-3xl px-6">
+    <h1 class="text-4xl font-extrabold text-white md:text-5xl">{title}</h1>
+    {subtitle && <p class="mt-4 text-white/85">{subtitle}</p>}
+  </div>
+</section>

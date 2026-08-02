@@ -1,0 +1,22 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import PageHero from '../../components/PageHero.astro'
+import SectionHeading from '../../components/SectionHeading.astro'
+import PostCard from '../../components/PostCard.astro'
+import { getPosts } from '../../lib/cms'
+
+const blogs = await getPosts('blog')
+---
+
+<Layout
+  title="Blogs | CCA - Certified College of Accountancy"
+  description="Embrace the power of your words as you embark on a blogging adventure that will shape minds and touch souls."
+>
+  <PageHero title="Latest Updates" subtitle="Embrace the power of your words as you embark on a blogging adventure that will shape minds and touch souls." />
+  <section class="mx-auto max-w-7xl px-6 py-20">
+    <SectionHeading title="Checkout Our Latest" accent="Updates" />
+    <div class="mt-14 grid gap-8 md:grid-cols-3">
+      {blogs.map((p, i) => <PostCard post={p} basePath="/blogs" loading={i < 3 ? 'eager' : 'lazy'} />)}
+    </div>
+  </section>
+</Layout>

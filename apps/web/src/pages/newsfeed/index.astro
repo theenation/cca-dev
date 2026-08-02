@@ -1,0 +1,22 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import PageHero from '../../components/PageHero.astro'
+import SectionHeading from '../../components/SectionHeading.astro'
+import PostCard from '../../components/PostCard.astro'
+import { getPosts } from '../../lib/cms'
+
+const newsfeed = await getPosts('newsfeed')
+---
+
+<Layout
+  title="Newsfeed | CCA - Certified College of Accountancy"
+  description="Discover compelling stories, achievements, and announcements from CCA."
+>
+  <PageHero title="Our Newsfeed" subtitle="Discover compelling stories, achievements, and announcements from CCA." />
+  <section class="mx-auto max-w-7xl px-6 py-20">
+    <SectionHeading title="Checkout Our" accent="Newsfeed" />
+    <div class="mt-14 grid gap-8 md:grid-cols-3">
+      {newsfeed.map((p, i) => <PostCard post={p} basePath="/newsfeed" loading={i < 3 ? 'eager' : 'lazy'} />)}
+    </div>
+  </section>
+</Layout>

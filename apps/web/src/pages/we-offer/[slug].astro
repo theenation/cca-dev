@@ -1,0 +1,87 @@
+---
+import Layout from '../../layouts/Layout.astro'
+import Icon from '../../components/Icon.astro'
+import CourseCard from '../../components/CourseCard.astro'
+import SmartImage from '../../components/SmartImage.astro'
+import { getCourses, mediaUrl } from '../../lib/cms'
+import { renderContent } from '../../lib/content'
+
+export async function getStaticPaths() {
+  const courses = await getCourses()
+  return courses.map((course) => ({ params: { slug: course.slug }, props: { course, allCourses: courses } }))
+}
+
+const { course, allCourses } = Astro.props as {
+  course: Awaited<ReturnType<typeof getCourses>>[number]
+  allCourses: Awaited<ReturnType<typeof getCourses>>
+}
+
+const heroImg = mediaUrl(course.heroImage, '/images/hero-bg.webp')
+const contentHtml = renderContent(course.content)
+const otherCourses = allCourses.filter((c) => c.slug !== course.slug).slice(0, 5)
+---
+
+<Layout title={`${course.title} | CCA - Certified College of Accountancy`} description={course.summary}>
+  <section class="relative overflow-hidden bg-secondary py-24 text-white">
+    <SmartImage src={heroImg} alt="" class="absolute inset-0 h-full w-full object-cover opacity-30" loading="eager" />
+    <div class="absolute inset-0 bg-gradient-to-br from-primary/90 to-secondary/90"></div>
+    <div class="relative mx-auto max-w-3xl px-6 text-center">
+      <h1 class="text-4xl font-extrabold md:text-5xl">{course.title} Course in Nepal</h1>
+      {course.summary && <p class="mt-4 text-white/85">{course.summary}</p>}
+      <a href="/enroll-course" class="btn-accent mt-8">Enroll Now</a>
+    </div>
+  </section>
+
+  <section class="mx-auto grid max-w-7xl gap-12 px-6 py-16 lg:grid-cols-3">
+    <article class="lg:col-span-2" set:html={contentHtml} />
+
+    <aside class="space-y-6">
+      <div class="rounded-2xl border border-line p-6 shadow-sm">
+        <div class="space-y-4 text-sm">
+          {course.duration && (
+            <p class="flex items-center gap-3 border-b border-line pb-4">
+              <Icon name="award" class="h-5 w-5 text-primary" /> Time Duration : <strong>{course.duration}</strong>
+            </p>
+          )}
+          {course.levels && (
+            <p class="flex items-center gap-3 border-b border-line pb-4">
+              <Icon name="list" class="h-5 w-5 text-primary" /> Levels : <strong>{course.levels}</strong>
+            </p>
+          )}
+          {course.students && (
+            <p class="flex items-center gap-3 border-b border-line pb-4">
+              <Icon name="users" class="h-5 w-5 text-primary" /> No. Of Students : <strong>{course.students}</strong>
+            </p>
+          )}
+          {course.passPercentage && (
+            <p class="flex items-center gap-3">
+              <Icon name="percent" class="h-5 w-5 text-primary" /> Pass Percentage : <strong>{course.passPercentage}</strong>
+            </p>
+          )}
+        </div>
+        <a href="/enroll-course" class="btn-accent mt-6 w-full">Enroll Course</a>
+      </div>
+
+      <div class="rounded-2xl bg-secondary p-6 text-white">
+        <h3 class="text-lg font-bold">More Courses For You !</h3>
+        <ul class="mt-4 divide-y divide-white/10">
+          {otherCourses.map((c) => (
+            <li class="flex items-center gap-3 py-3">
+              <SmartImage src={mediaUrl(c.thumbnail, '/images/f-image1.png')} alt={c.title} class="h-12 w-12 rounded-md object-cover" />
+              <a href={`/we-offer/${c.slug}`} class="font-semibold hover:text-accent">{c.title}</a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </aside>
+  </section>
+
+  <section class="bg-cloud py-16">
+    <div class="mx-auto max-w-7xl px-6 text-center">
+      <h2 class="text-2xl font-bold text-secondary">Explore More Courses</h2>
+      <div class="mt-10 grid gap-8 text-left md:grid-cols-3">
+        {otherCourses.slice(0, 3).map((c) => <CourseCard course={c} />)}
+      </div>
+    </div>
+  </section>
+</Layout>

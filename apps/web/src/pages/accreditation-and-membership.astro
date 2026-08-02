@@ -1,0 +1,36 @@
+---
+import Layout from '../layouts/Layout.astro'
+import PageHero from '../components/PageHero.astro'
+import ZigZag from '../components/ZigZag.astro'
+import SmartImage from '../components/SmartImage.astro'
+import { getAccreditationPage, mediaUrl } from '../lib/cms'
+import { renderContent } from '../lib/content'
+
+const accreditation = await getAccreditationPage()
+---
+
+<Layout title="Accreditation And Membership | CCA - Certified College of Accountancy" description={accreditation.heroSubtitle}>
+  <PageHero title={accreditation.heroTitle} subtitle={accreditation.heroSubtitle} />
+
+  <section class="mx-auto max-w-7xl space-y-16 px-6 py-20">
+    {accreditation.items.map((item, i) => (
+      <div class={`grid items-center gap-10 md:grid-cols-2 ${i % 2 === 1 ? 'md:[&>*:first-child]:order-2' : ''}`}>
+        <div class="overflow-hidden rounded-2xl border border-line bg-white p-3 shadow-lg">
+          <SmartImage
+            src={mediaUrl(item.image)}
+            alt={`${item.title} ${item.highlight}`}
+            class="w-full rounded-xl object-contain"
+            loading={i === 0 ? 'eager' : 'lazy'}
+          />
+        </div>
+        <div>
+          <ZigZag class="h-4 w-20 text-accent" />
+          <h2 class="mt-3 text-2xl font-bold text-secondary md:text-3xl">
+            {item.title} <span class="text-accent">{item.highlight}</span>
+          </h2>
+          <div class="text-sm" set:html={renderContent(item.description)} />
+        </div>
+      </div>
+    ))}
+  </section>
+</Layout>
