@@ -640,7 +640,7 @@ async function run() {
   for (const [i, m] of teamSeeds.entries()) {
     const imageId = await uploadImage(m.image, m.name)
     const existing = await payload.find({ collection: 'team-members', where: { name: { equals: m.name } }, limit: 1 })
-    const data = { name: m.name, role: m.role, group: m.group, image: imageId, socials: m.socials, order: i }
+    const data = { name: m.name, role: m.role, group: m.group, image: imageId, socials: [...m.socials], order: i }
     if (existing.docs[0]) await payload.update({ collection: 'team-members', id: existing.docs[0].id, data })
     else await payload.create({ collection: 'team-members', data })
   }
