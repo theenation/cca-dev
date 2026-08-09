@@ -42,24 +42,25 @@ const chairmanImg = mediaUrl(about.chairmanImage, '/images/team/govinda-raj-pant
     </div>
   </section>
 
-  <!-- Vision & Mission -->
-  <section class="bg-cloud py-20">
-    <div class="mx-auto grid max-w-7xl gap-14 px-6 lg:grid-cols-2">
-      <div>
-        <SmartImage src="/images/mission-icon.png" alt="Mission" class="mx-auto h-64 w-64 object-contain" />
+  <!-- Mission & Vision -->
+  <section class="bg-cloud py-20" id="Mission">
+    <div class="mx-auto max-w-7xl space-y-14 px-6">
+      <div class="grid items-center gap-14 lg:grid-cols-2">
+        <SmartImage src="/images/mission-icon.png" alt="Vision" class="mx-auto h-64 w-64 object-contain" />
+        <div>
+          <ZigZag />
+          <h3 class="mt-3 text-2xl font-bold text-secondary">{about.visionTitle.split(' ')[0]} <span class="text-accent">{about.visionTitle.split(' ').slice(1).join(' ')}</span></h3>
+          <div set:html={renderContent(about.visionText)} />
+        </div>
       </div>
-      <div class="flex flex-col justify-center gap-8">
-        <div id="mission">
+      <div class="grid items-center gap-14 lg:grid-cols-2">
+        <div class="lg:order-1">
           <ZigZag />
           <h3 class="mt-3 text-2xl font-bold text-secondary">{about.missionTitle.split(' ')[0]} <span class="text-accent">{about.missionTitle.split(' ').slice(1).join(' ')}</span></h3>
           <div set:html={renderContent(about.missionText)} />
         </div>
+        <SmartImage src="/images/cta-students-group.webp" alt="CCA students" class="w-full rounded-2xl object-cover shadow-lg lg:order-2" />
       </div>
-    </div>
-    <div class="mx-auto mt-14 max-w-3xl px-6" id="mission-vision">
-      <ZigZag class="mx-auto" />
-      <h3 class="mt-3 text-center text-2xl font-bold text-secondary">{about.visionTitle.split(' ')[0]} <span class="text-accent">{about.visionTitle.split(' ').slice(1).join(' ')}</span></h3>
-      <div class="[&_p]:text-center" set:html={renderContent(about.visionText)} />
     </div>
   </section>
 
@@ -105,19 +106,23 @@ const chairmanImg = mediaUrl(about.chairmanImage, '/images/team/govinda-raj-pant
   </section>
 
   <!-- Chairman message -->
-  <section class="mx-auto max-w-4xl px-6 pb-20" id="chairman">
-    <ZigZag />
-    <h2 class="mt-3 text-3xl font-bold text-secondary">
-      {about.chairmanMessageTitle.split(' from ')[0]} from <span class="text-accent">{about.chairmanMessageTitle.split(' from ')[1]}</span>
-    </h2>
-    <div class="mt-8 flex flex-col gap-6 sm:flex-row sm:items-start">
-      <SmartImage src={chairmanImg} alt="Chairman" class="h-32 w-32 shrink-0 rounded-full object-cover" />
-      <div class="text-ink/80 [&>p:first-child]:mt-0" set:html={renderContent(about.chairmanMessageText)} />
+  <section class="mx-auto max-w-7xl px-6 pb-20" id="Chairman_Message">
+    <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
+      <div>
+        <ZigZag />
+        <h2 class="mt-3 text-3xl font-bold text-secondary">
+          {about.chairmanMessageTitle.split(' from ')[0]} from <span class="text-accent">{about.chairmanMessageTitle.split(' from ')[1]}</span>
+        </h2>
+        <div class="mt-6 text-ink/80 [&>p:first-child]:mt-0" set:html={renderContent(about.chairmanMessageText)} />
+      </div>
+      <div class="overflow-hidden rounded-2xl shadow-lg">
+        <SmartImage src={chairmanImg} alt="Chairman" class="aspect-square w-full object-cover" />
+      </div>
     </div>
   </section>
 
   <!-- Board of Directors -->
-  <section class="bg-cloud py-20" id="board">
+  <section class="bg-cloud py-20" id="Director">
     <div class="mx-auto max-w-7xl px-6">
       <div class="flex flex-wrap items-center justify-between gap-6">
         <SectionHeading title="Board of" accent="Directors" align="left" />

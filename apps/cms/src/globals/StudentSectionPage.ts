@@ -19,16 +19,9 @@ export const StudentSectionPage: GlobalConfig = {
       fields: [{ name: 'image', type: 'upload', relationTo: 'media', required: true }],
     },
     {
-      name: 'cbeSubjects',
+      name: 'scholarshipPhotos',
       type: 'array',
-      fields: [
-        { name: 'name', type: 'text', required: true },
-        { name: 'icon', type: 'upload', relationTo: 'media' },
-      ],
+      fields: [{ name: 'image', type: 'upload', relationTo: 'media', required: true }],
     },
-    { name: 'scholarshipText', type: 'textarea' },
-    { name: 'feeStructureText', type: 'textarea' },
-    { name: 'feeStructureUrl', type: 'text', defaultValue: '/uploads/Fee-Structure-CCA.pdf' },
-    { name: 'brochureUrl', type: 'text', defaultValue: '/uploads/CCA-Brochure.pdf' },
   ],
 }

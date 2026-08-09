@@ -191,6 +191,7 @@ BBS (Bachelor of Business Studies) is a four year degree program conducted by Tr
     levels: '4 Papers',
     passPercentage: '92% above',
     content: `## Licensed CBE Centre
+![On Demand Licensed CBE Centre](/images/cbe-centre.webp)
 On-demand CBE allows flexibility in your studies as you can sit exams at any time of the year. ACCA allows students to take on-demand CBE for 4 papers: Business Technology (BT), Management Accounting (MA), Financial Accounting (FA) and Law (LW).`,
     faqs: [],
     order: 3,
@@ -280,6 +281,14 @@ export const testimonials = [
     message:
       'ACCA, one of the career leading profession, has catered my interest in accounting and finance to a level that gained me 100/100 in two subjects FA and MA. This landmark accomplishment was not possible without the invaluable support of CCA, the best ACCA college of Nepal.',
   },
+  {
+    name: 'Shirish Babu Tiwari',
+    role: 'Student',
+    rating: 5,
+    group: 'student',
+    message:
+      'My journey at CCA has been amazing. The friendly and supportive environment, along with approachable teachers, colleagues, and seniors, made learning enjoyable. The dual faculty system was highly beneficial, ensuring I never felt alone during my Knowledge Level studies. Well-structured classes and regular mock tests kept me confident and prepared. CCA has provided me with a strong foundation, and I am grateful to be part of such an excellent institution. I have no second thoughts about my decision to choose CCA.',
+  },
 ]
 
 export type Post = {
@@ -300,6 +309,19 @@ export const posts: Post[] = [
     excerpt:
       'You have worked hard for your ACCA. Now comes the most important decision: which sector should you work in? Not all sectors pay equally. Choosing the wrong one can keep...',
     publishedDate: '2026-05-12',
+    featuredImage: { url: '/images/conference.webp' },
+    content: `You have worked hard for your ACCA. Now comes the most important decision: which sector should you work in? Not all sectors pay equally, and choosing the wrong one can keep your salary growth flat for years.
+
+## 1. Audit & Assurance (Big 4 and Mid-Tier Firms)
+Audit remains the classic launchpad for ACCA affiliates in Nepal. Big 4 and reputed mid-tier firms actively recruit ACCA students for statutory audit, internal audit, and assurance roles, and the structured articleship builds the kind of client exposure that fast-tracks promotions.
+
+## 2. Banking & Financial Institutions
+Commercial banks, development banks, and microfinance institutions in Nepal increasingly prefer ACCA qualified professionals for credit risk, treasury, financial reporting, and compliance roles — areas where IFRS knowledge and strong technical accounting matter most.
+
+## 3. Multinational Companies (MNCs) & Corporate Finance
+MNCs operating in Nepal and abroad look for ACCA affiliates for financial controllership, FP&A, and corporate finance positions. The global recognition of ACCA makes it easier to move into regional or international roles within the same company.
+
+**Bottom line:** audit builds the foundation, banking rewards technical depth, and corporate/MNC roles offer the highest long-term ceiling — pick based on where you want to be in five years, not just the next job.`,
   },
   {
     slug: 'difference-between-acca-and-other-accounting-degrees',
@@ -308,6 +330,21 @@ export const posts: Post[] = [
     excerpt:
       'Introduction: Why Choosing the Right Accounting Qualification Matters. Choosing the right accounting qualification is one of the most important decisions for students interested in finance, business, or auditing. In Nepal,...',
     publishedDate: '2026-05-12',
+    featuredImage: { url: '/images/reception.webp' },
+    content: `## Why Choosing the Right Accounting Qualification Matters
+Choosing the right accounting qualification is one of the most important decisions for students interested in finance, business, or auditing. In Nepal, students are often confused between ACCA, BBS, and other local accounting degrees.
+
+## Global Recognition
+ACCA is recognized in 180+ countries, while a standalone BBS or local degree is generally recognized only within Nepal or a handful of neighboring countries.
+
+## Curriculum Depth
+ACCA's syllabus is built and updated by a global professional body, covering financial reporting, audit, tax, and strategic business leadership at a depth most university degrees only touch on.
+
+## Career Flexibility
+- ACCA affiliates can work in audit, banking, or corporate finance in Nepal or abroad without further conversion exams in most jurisdictions.
+- Other accounting degrees usually require an additional professional certification (like ACCA, CA, or CPA) before reaching the same career ceiling.
+
+**In short:** ACCA is a globally portable professional qualification, while most other accounting degrees are an academic foundation you build a career on top of — many CCA students in fact combine BBS with ACCA to get both.`,
   },
   {
     slug: 'acca-scholarships',
@@ -316,6 +353,21 @@ export const posts: Post[] = [
     excerpt:
       'The Association of Chartered Certified Accountants (ACCA) qualification is one of the most respected professional accounting certifications in the world. It prepares students for global careers in accounting, auditing, taxation,...',
     publishedDate: '2026-03-09',
+    featuredImage: { url: '/images/hero-bg.webp' },
+    content: `The Association of Chartered Certified Accountants (ACCA) qualification is one of the most respected professional accounting certifications in the world. It prepares students for global careers in accounting, auditing, taxation, and finance — and CCA offers scholarship support to make it more accessible.
+
+## Who Can Apply
+CCA offers scholarships based on academic performance in +2/A-Levels and on outstanding results in ACCA exams, so both incoming and existing students have a path to financial support.
+
+## What the Scholarship Covers
+- Partial or full tuition waiver on ACCA papers, depending on the merit category
+- Additional recognition for students who achieve Nepal or World Rank in ACCA exams
+- Ongoing support for high-performing students through subsequent levels of the qualification
+
+## How to Apply
+Interested students can enquire at CCA's admissions desk with their academic transcripts; rank holders from previous ACCA sessions are considered automatically for the achievement-based scholarship category.
+
+**Why it matters:** a scholarship can meaningfully reduce the cost of the full ACCA journey, which is exactly why CCA continues to invest in rewarding both incoming merit and exam performance along the way.`,
   },
   {
     slug: 'celebrating-success-cca-honors-graduates-with-a-grand-ceremony',
@@ -373,21 +425,30 @@ export const teamMembers = [
     role: 'Managing Director',
     group: 'board',
     image: { url: '/images/team/govinda-raj-panta.webp' },
-    socials: [{ platform: 'facebook', url: '#' }, { platform: 'instagram', url: '#' }],
+    socials: [
+      { platform: 'facebook', url: 'https://www.facebook.com/share/1aZ8fNvsaP/?mibextid=wwXIfr' },
+      { platform: 'instagram', url: 'https://www.instagram.com/govinda_raj_panta/' },
+    ],
   },
   {
     name: 'Mr. Manish Sharma',
     role: 'Director Of Marketing',
     group: 'board',
     image: { url: '/images/team/manish-sharma.webp' },
-    socials: [{ platform: 'facebook', url: '#' }, { platform: 'instagram', url: '#' }],
+    socials: [
+      { platform: 'facebook', url: 'https://www.facebook.com/share/1CweBqXUnQ/?mibextid=wwXIfr' },
+      { platform: 'instagram', url: 'https://www.instagram.com/manisssigdel/' },
+    ],
   },
   {
     name: 'Mr. Diwas Silwal',
     role: 'Director of Academics',
     group: 'board',
     image: { url: '/images/team/diwas-silwal.webp' },
-    socials: [{ platform: 'linkedin', url: '#' }, { platform: 'instagram', url: '#' }],
+    socials: [
+      { platform: 'linkedin', url: 'http://linkedin.com/in/diwas-silwal-1b0770114' },
+      { platform: 'instagram', url: 'https://www.instagram.com/thediwas/' },
+    ],
   },
   {
     name: 'Sunita Dhanuk',
@@ -459,7 +520,7 @@ export const contactPage = {
   introAccent: 'Reach Us !',
   introText:
     'Experience seamless communication with our innovative contact solutions. Connect with confidence and never miss a beat.',
-  mapEmbedUrl: 'https://www.google.com/maps?q=Thapagaun,New+Baneshwar,Kathmandu&output=embed',
+  mapEmbedUrl: 'https://www.google.com/maps?q=27.6919151,85.3308987&z=17&output=embed',
 }
 
 export const studentSectionPage = {
@@ -487,17 +548,9 @@ export const studentSectionPage = {
     { image: { url: '/images/student-section/nepal-rank/10.webp' } },
     { image: { url: '/images/student-section/nepal-rank/11.webp' } },
   ],
-  cbeSubjects: [
-    { name: 'Financial Accounting (FA)', icon: { url: '/images/student-section/cbe-icons/fa.png' } },
-    { name: 'Business Technology (BT)', icon: { url: '/images/student-section/cbe-icons/bt.png' } },
-    { name: 'Management Accounting (MA)', icon: { url: '/images/student-section/cbe-icons/ma.png' } },
-    { name: 'Law (LW)', icon: { url: '/images/student-section/cbe-icons/lw.png' } },
-  ],
-  scholarshipText: '',
-  feeStructureText:
-    'It is a fund created by CCA from its annual revenue in order to assist deserving candidates. This scholarship covers the full tuition fee for Applied Knowledge Level and LW. Interested students have to participate in CCA Scholarship Fund Exam held in each batch and the students who secure the highest mark will be provided with this scholarship.',
-  feeStructureUrl: '/uploads/Fee-Structure-CCA.pdf',
-  brochureUrl: '/uploads/CCA-Brochure.pdf',
+  scholarshipPhotos: Array.from({ length: 26 }, (_, i) => ({
+    image: { url: `/images/student-section/scholarship-holders/${i + 1}.webp` },
+  })),
 }
 
 export const accreditationPage = {

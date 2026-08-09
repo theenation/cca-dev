@@ -6,9 +6,9 @@ import SmartImage from '../components/SmartImage.astro'
 import { getStudentSectionPage, mediaUrl } from '../lib/cms'
 
 const studentSection = await getStudentSectionPage()
-const cbeSubjects = studentSection.cbeSubjects
 const worldRankPhotos = studentSection.worldRankPhotos ?? []
 const nepalRankPhotos = studentSection.nepalRankPhotos ?? []
+const scholarshipPhotos = studentSection.scholarshipPhotos ?? []
 ---
 
 <Layout title="Student Section | CCA - Certified College of Accountancy" description={studentSection.heroSubtitle}>
@@ -39,37 +39,16 @@ const nepalRankPhotos = studentSection.nepalRankPhotos ?? []
     </div>
   </section>
 
-  <section class="mx-auto max-w-7xl px-6 py-20" id="cbe-rank">
-    <SectionHeading title="CBE Excellent" accent="Performance" />
-    <div class="mt-14 grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-      {cbeSubjects.map((s) => (
-        <div class="rounded-2xl border border-line p-8 text-center shadow-sm">
-          {s.icon && <SmartImage src={mediaUrl(s.icon)} alt={s.name} class="mx-auto h-20 w-20 object-contain" />}
-          <h3 class="mt-4 text-lg font-bold text-secondary">{s.name}</h3>
-        </div>
-      ))}
-    </div>
-  </section>
-
   <section class="bg-cloud py-20">
     <div class="mx-auto max-w-7xl px-6">
       <SectionHeading title="CCA Scholarship" accent="Holders" />
-      {studentSection.scholarshipText && <p class="mx-auto mt-6 max-w-2xl text-center text-ink/80">{studentSection.scholarshipText}</p>}
-    </div>
-  </section>
-
-  <section class="mx-auto max-w-3xl px-6 py-20">
-    <SectionHeading title="CCA Fee" accent="Structure" />
-    {studentSection.feeStructureText && <p class="mx-auto mt-6 max-w-2xl text-center text-ink/80">{studentSection.feeStructureText}</p>}
-    <div class="mt-8 text-center">
-      <a href={studentSection.feeStructureUrl} class="btn-primary">Download Fee Structure</a>
-    </div>
-  </section>
-
-  <section class="bg-cloud py-20">
-    <div class="mx-auto max-w-5xl px-6 text-center">
-      <SectionHeading title="CCA" accent="Brochure" />
-      <a href={studentSection.brochureUrl} class="btn-accent mt-8 inline-flex">Download Brochure</a>
+      <div class="mt-14 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-4">
+        {scholarshipPhotos.map((p) => (
+          <div class="h-72 overflow-hidden rounded-2xl border border-line bg-white p-2 shadow-md">
+            <SmartImage src={mediaUrl(p.image)} alt="CCA Scholarship Holder" class="h-full w-full object-contain" />
+          </div>
+        ))}
+      </div>
     </div>
   </section>
 

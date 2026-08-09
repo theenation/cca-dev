@@ -56,7 +56,7 @@ export async function getContactPage() {
 
 export async function getStudentSectionPage() {
   const data = await safeFetch<typeof fallback.studentSectionPage>('/api/globals/student-section-page')
-  return data && data.heroTitle && data.cbeSubjects?.length ? data : fallback.studentSectionPage
+  return data && data.heroTitle && data.worldRankPhotos?.length ? data : fallback.studentSectionPage
 }
 
 export async function getAccreditationPage() {

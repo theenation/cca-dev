@@ -15,11 +15,11 @@ const accreditation = await getAccreditationPage()
   <section class="mx-auto max-w-7xl space-y-16 px-6 py-20">
     {accreditation.items.map((item, i) => (
       <div class={`grid items-center gap-10 md:grid-cols-2 ${i % 2 === 1 ? 'md:[&>*:first-child]:order-2' : ''}`}>
-        <div class="overflow-hidden rounded-2xl border border-line bg-white p-3 shadow-lg">
+        <div class="h-80 overflow-hidden rounded-2xl border border-line bg-white p-3 shadow-lg sm:h-96">
           <SmartImage
             src={mediaUrl(item.image)}
             alt={`${item.title} ${item.highlight}`}
-            class="w-full rounded-xl object-contain"
+            class="h-full w-full rounded-xl object-contain"
             loading={i === 0 ? 'eager' : 'lazy'}
           />
         </div>

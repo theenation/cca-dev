@@ -34,11 +34,23 @@ const logoUrl = mediaUrl(settings.logo, '/images/logo.png')
 
     <div>
       <h3 class="text-lg font-bold text-white">Accreditation</h3>
-      <div class="mt-4 grid grid-cols-2 gap-4">
-        <SmartImage src="/images/reputation.png" alt="ACCA Approved Employer" class="h-20 w-20 object-contain brightness-0 invert" />
-        <SmartImage src="/images/degree.png" alt="Licensed CBE Centre" class="h-20 w-20 object-contain brightness-0 invert" />
-        <SmartImage src="/images/verified.png" alt="ACCA Approved Learning Partner" class="h-20 w-20 object-contain brightness-0 invert" />
-        <SmartImage src="/images/iso.png" alt="ISO 9001:2015 Certified College" class="h-20 w-20 object-contain brightness-0 invert" />
+      <div class="mt-4 flex flex-col gap-3">
+        <span class="flex items-center gap-3 text-sm text-white/80">
+          <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/10 text-accent"><Icon name="award" class="h-5 w-5" /></span>
+          ACCA Approved Employer
+        </span>
+        <span class="flex items-center gap-3 text-sm text-white/80">
+          <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/10 text-accent"><Icon name="list" class="h-5 w-5" /></span>
+          Licensed CBE Centre
+        </span>
+        <span class="flex items-center gap-3 text-sm text-white/80">
+          <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/10 text-accent"><Icon name="shield" class="h-5 w-5" /></span>
+          ACCA Approved Learning Partner
+        </span>
+        <span class="flex items-center gap-3 text-sm text-white/80">
+          <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/10 text-accent"><Icon name="star" class="h-5 w-5" /></span>
+          ISO 9001:2015 Certified
+        </span>
       </div>
     </div>
   </div>

@@ -9,6 +9,7 @@ import ZigZag from '../components/ZigZag.astro'
 import SmartImage from '../components/SmartImage.astro'
 import {
   getHomePage,
+  getSiteSettings,
   getCourses,
   getTestimonials,
   getPosts,
@@ -18,6 +19,7 @@ import {
 import { renderContent } from '../lib/content'
 
 const home = await getHomePage()
+const settings = await getSiteSettings()
 const courses = await getCourses()
 const testimonials = await getTestimonials()
 const blogs = (await getPosts('blog')).slice(0, 3)
@@ -30,9 +32,10 @@ const aboutImg = mediaUrl(home.aboutImage, '/images/reception.webp')
 const achievementImg = mediaUrl(home.achievementImage, '/images/conference.webp')
 
 const featuredCourses = courses.filter((c) => c.featured).slice(0, 3)
+const whatsappLink = settings.whatsapp ? `https://api.whatsapp.com/send?phone=${settings.whatsapp}` : '/contact'
 ---
 
-<Layout title="ACCA College in Kathmandu, Nepal | Study ACCA at CCA" description={home.heroSubtitle}>
+<Layout title="Certified college of accountancy | Study ACCA at CCA" description={home.heroSubtitle}>
   <!-- Hero -->
   <section class="relative overflow-hidden bg-secondary pb-28 pt-28 text-white">
     {home.heroVideoId ? (
@@ -45,9 +48,9 @@ const featuredCourses = courses.filter((c) => c.featured).slice(0, 3)
         ></iframe>
       </div>
     ) : (
-      <SmartImage src={heroImg} alt="" class="absolute inset-0 h-full w-full object-cover opacity-40" loading="eager" />
+      <SmartImage src={heroImg} alt="" class="absolute inset-0 h-full w-full object-cover" loading="eager" />
     )}
-    <div class="absolute inset-0 bg-gradient-to-r from-secondary via-secondary/90 to-secondary/60"></div>
+    <div class="absolute inset-0 bg-primary/[0.14]"></div>
     <div class="relative mx-auto max-w-7xl px-6">
       <div class="max-w-2xl">
         <h1 class="text-4xl font-extrabold leading-tight text-white md:text-5xl">{home.heroTitle}</h1>
@@ -75,9 +78,11 @@ const featuredCourses = courses.filter((c) => c.featured).slice(0, 3)
   </section>
 
   <!-- About -->
-  <section class="mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-2 lg:items-center">
-    <div class="relative">
-      <SmartImage src={aboutImg} alt="CCA campus" class="w-full rounded-2xl object-cover shadow-lg" />
+  <section class="mx-auto grid max-w-7xl gap-12 px-6 py-20 lg:grid-cols-2 lg:items-stretch">
+    <div class="flex flex-col">
+      <div class="relative min-h-[320px] flex-1 overflow-hidden rounded-2xl shadow-lg lg:min-h-0">
+        <SmartImage src={aboutImg} alt="CCA campus" class="absolute inset-0 h-full w-full object-cover" />
+      </div>
       <div class="mt-6 flex divide-x divide-line rounded-xl bg-white p-4 shadow">
         {home.aboutStats?.map((s) => (
           <div class="flex-1 px-4 text-center">
@@ -87,13 +92,13 @@ const featuredCourses = courses.filter((c) => c.featured).slice(0, 3)
         ))}
       </div>
     </div>
-    <div>
+    <div class="flex flex-col justify-center">
       <ZigZag />
       <h2 class="mt-3 text-3xl font-bold text-secondary md:text-4xl">
         {home.aboutTitle?.split(' ')[0]} <span class="text-accent">{home.aboutTitle?.split(' ').slice(1).join(' ')}</span>
       </h2>
       <div set:html={renderContent(home.aboutText)} />
-      <a href="/about" class="btn-primary mt-8">About Us</a>
+      <a href="/about" class="btn-primary mt-8 self-start">About Us</a>
     </div>
   </section>
 
@@ -113,20 +118,22 @@ const featuredCourses = courses.filter((c) => c.featured).slice(0, 3)
   <!-- Categories + booking form -->
   <section class="mx-auto max-w-7xl px-6 py-20">
     <SectionHeading title="Our Best" accent="Categories" align="left" />
-    <div class="mt-6">
-      <a href="/we-offer" class="btn-accent">More Categories</a>
-    </div>
     <div class="mt-10 grid gap-8 lg:grid-cols-3 lg:items-start">
-      <div class="grid gap-6 sm:grid-cols-2 lg:col-span-2">
-        {home.categories?.map((cat) => (
-          <div class="rounded-2xl border-2 border-dashed border-line p-10 text-center">
-            <div class="mx-auto grid h-20 w-20 place-items-center rounded-full bg-cloud">
-              <Icon name="award" class="h-8 w-8 text-primary" />
+      <div class="lg:col-span-2">
+        <div class="grid gap-6 sm:grid-cols-2">
+          {home.categories?.map((cat) => (
+            <div class="rounded-2xl border-2 border-dashed border-line p-10 text-center">
+              <div class="mx-auto grid h-20 w-20 place-items-center rounded-full bg-cloud">
+                <Icon name="award" class="h-8 w-8 text-primary" />
+              </div>
+              <h3 class="mt-5 text-xl font-bold text-secondary">{cat.title}</h3>
+              <p class="mt-1 text-primary">{cat.courseCount} Course Available</p>
             </div>
-            <h3 class="mt-5 text-xl font-bold text-secondary">{cat.title}</h3>
-            <p class="mt-1 text-primary">{cat.courseCount} Course Available</p>
-          </div>
-        ))}
+          ))}
+        </div>
+        <div class="mt-6">
+          <a href="/we-offer" class="btn-accent">More Categories</a>
+        </div>
       </div>
 
       <div class="rounded-3xl bg-cloud p-8">
@@ -152,25 +159,25 @@ const featuredCourses = courses.filter((c) => c.featured).slice(0, 3)
 
   <!-- Achievement -->
   <section class="relative overflow-hidden bg-secondary py-20 text-white">
-    <div class="mx-auto grid max-w-7xl gap-10 px-6 lg:grid-cols-2 lg:items-center">
-      <div class="relative overflow-hidden rounded-2xl">
-        <SmartImage src={achievementImg} alt="CCA achievement" class="h-96 w-full object-cover" />
+    <div class="mx-auto grid max-w-7xl gap-10 px-6 lg:grid-cols-2 lg:items-stretch">
+      <div class="relative min-h-[320px] overflow-hidden rounded-2xl lg:min-h-0">
+        <SmartImage src={achievementImg} alt="CCA achievement" class="absolute inset-0 h-full w-full object-cover" />
         {home.achievementVideoUrl && (
           <a href={home.achievementVideoUrl} target="_blank" rel="noopener" aria-label="Watch achievement video" class="absolute inset-0 grid place-items-center">
             <span class="grid h-16 w-16 place-items-center rounded-full bg-primary/90"><Icon name="play" class="h-7 w-7 text-white" /></span>
           </a>
         )}
       </div>
-      <div class="rounded-2xl bg-white p-10 text-ink">
+      <div class="flex flex-col justify-center rounded-2xl bg-white p-10 text-ink">
         <ZigZag />
         <h2 class="mt-3 text-3xl font-bold text-secondary">{home.achievementTitle?.split(' ')[0]} <span class="text-accent">{home.achievementTitle?.split(' ').slice(1).join(' ')}</span></h2>
         <p class="mt-4 text-ink/80">{home.achievementText}</p>
-        <a href="/contact" class="btn-accent mt-8">Join Us Now</a>
+        <a href="/contact" class="btn-accent mt-8 self-start">Join Us Now</a>
       </div>
     </div>
     <div class="mx-auto mt-16 max-w-7xl px-6 text-center">
-      <p class="text-5xl font-extrabold">{new Date().getFullYear() - (home.sinceYear || 2006)}+</p>
-      <p class="mt-2 text-white/70">Years Since {home.sinceYear}</p>
+      <p class="text-sm font-semibold uppercase tracking-widest text-white/70">Since</p>
+      <p class="mt-2 text-5xl font-extrabold">{home.sinceYear}</p>
     </div>
   </section>
 
@@ -184,21 +191,8 @@ const featuredCourses = courses.filter((c) => c.featured).slice(0, 3)
     </div>
   </section>
 
-  <!-- Testimonials -->
-  <section class="bg-cloud py-20">
-    <div class="mx-auto max-w-7xl px-6">
-      <SectionHeading title="Review's From" accent="Students" subtitle="Before you study, let reviews light your path; after you learn, share your success story." />
-      <div class="mt-14 grid gap-8 md:grid-cols-3">
-        {testimonials.slice(0, 3).map((t) => <TestimonialCard testimonial={t} />)}
-      </div>
-      <div class="mt-12 text-center">
-        <a href="/testimonial" class="btn-accent">More Reviews Now</a>
-      </div>
-    </div>
-  </section>
-
   <!-- Events -->
-  <section class="bg-white py-20">
+  <section class="bg-cloud py-20">
     <div class="mx-auto max-w-7xl px-6">
       <SectionHeading title="Checkout Our" accent="Events" subtitle="Stay updated on our latest happenings, from academic seminars to cultural celebrations, offering exciting opportunities for engagement, networking, and enrichment." />
       <div class="mt-14 grid gap-8 md:grid-cols-3">
@@ -209,15 +203,29 @@ const featuredCourses = courses.filter((c) => c.featured).slice(0, 3)
 
   <!-- CTA -->
   <section class="relative overflow-hidden bg-secondary py-24 text-white">
-    <SmartImage src="/images/conference.webp" alt="" class="absolute inset-0 h-full w-full object-cover opacity-25" />
-    <div class="absolute inset-0 bg-secondary/80"></div>
-    <div class="relative mx-auto max-w-3xl px-6 text-center">
-      <ZigZag class="mx-auto h-4 w-20 text-white" />
-      <h2 class="mt-3 text-3xl font-bold text-white md:text-4xl">
-        Unbounded Education, <span class="text-accent">Infinite Opportunities!</span>
-      </h2>
-      <p class="mt-4 text-white/80">{home.ctaText}</p>
-      <a href="/contact" class="btn-accent mt-8">Message Now</a>
+    <div class="relative mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-2 lg:items-center">
+      <div>
+        <ZigZag class="h-4 w-20 text-white" />
+        <h2 class="mt-3 text-3xl font-bold text-white md:text-4xl">
+          Unbounded Education, <span class="text-accent">Infinite Opportunities!</span>
+        </h2>
+        <p class="mt-4 text-white/80">{home.ctaText}</p>
+        <a href={whatsappLink} target="_blank" rel="noopener" class="btn-accent mt-8">Message Now</a>
+      </div>
+      <div class="grid min-h-[280px] grid-cols-2 grid-rows-2 gap-4">
+        <div class="flex items-center justify-center rounded-2xl bg-white/10 p-6 text-center">
+          <p class="text-sm font-semibold text-white sm:text-base">Highest Student Enrolled</p>
+        </div>
+        <div class="overflow-hidden rounded-2xl">
+          <SmartImage src="/images/college-tour.webp" alt="CCA classroom" class="h-full w-full object-cover" />
+        </div>
+        <div class="overflow-hidden rounded-2xl">
+          <SmartImage src="/images/cta-students-group.webp" alt="CCA students" class="h-full w-full object-cover" />
+        </div>
+        <div class="flex items-center justify-center rounded-2xl rounded-tl-[3rem] bg-accent p-6 text-center shadow-lg">
+          <p class="text-sm font-semibold text-white sm:text-base">Producer of Nepal and World Rank Holders</p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -231,19 +239,34 @@ const featuredCourses = courses.filter((c) => c.featured).slice(0, 3)
     </div>
   </section>
 
-  <!-- Placement partners -->
-  <section class="bg-cloud py-20">
+  <!-- Testimonials -->
+  <section class="overflow-hidden bg-cloud py-20">
     <div class="mx-auto max-w-7xl px-6">
-      <SectionHeading title="Our Placement" accent="Partners" subtitle="We have now joined hands with different companies to provide skill development training and placement opportunities to our students" />
-      <div class="mt-14 grid grid-cols-2 gap-6 sm:grid-cols-3 lg:grid-cols-5">
-        {partners.map((p) => (
-          <div class="grid h-32 place-items-center rounded-xl border border-line bg-white p-4">
-            <SmartImage src={mediaUrl(p.logo, '')} alt={p.name} class="max-h-20 max-w-full object-contain" />
+      <SectionHeading title="Review's From" accent="Students" subtitle="Before you study, let reviews light your path; after you learn, share your success story." />
+    </div>
+    <div class="marquee-wrap relative mt-14 overflow-hidden px-6">
+      <div class="marquee-track testimonial-marquee-track flex w-max gap-6">
+        {[...testimonials, ...testimonials].map((t) => (
+          <div class="w-[360px] shrink-0">
+            <TestimonialCard testimonial={t} />
           </div>
         ))}
       </div>
-      <div class="mt-12 text-center">
-        <a href="/placement-opportunities" class="btn-accent">View More</a>
+    </div>
+  </section>
+
+  <!-- Placement partners -->
+  <section class="overflow-hidden bg-white py-20">
+    <div class="mx-auto max-w-7xl px-6">
+      <SectionHeading title="Our Placement" accent="Partners" subtitle="We have now joined hands with different companies to provide skill development training and placement opportunities to our students" />
+    </div>
+    <div class="marquee-wrap relative mt-14 overflow-hidden px-6">
+      <div class="marquee-track flex w-max gap-6">
+        {[...partners, ...partners].map((p) => (
+          <div class="grid h-32 w-40 shrink-0 place-items-center rounded-xl border border-line bg-white p-4">
+            <SmartImage src={mediaUrl(p.logo, '')} alt={p.name} class="max-h-20 max-w-full object-contain" />
+          </div>
+        ))}
       </div>
     </div>
   </section>

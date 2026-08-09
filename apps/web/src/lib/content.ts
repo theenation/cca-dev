@@ -10,6 +10,8 @@ type LexicalNode = {
   text?: string
   children?: LexicalNode[]
   listType?: string
+  alt?: string
+  src?: string
 }
 
 function escapeHtml(str: string) {
@@ -29,6 +31,8 @@ function renderLexicalNode(node: LexicalNode): string {
   if (node.type === 'text') return renderTextNode(node)
   const inner = (node.children || []).map(renderLexicalNode).join('')
   switch (node.type) {
+    case 'image':
+      return `<img src="${escapeHtml(node.src || '')}" alt="${escapeHtml(node.alt || '')}" class="float-right mb-4 ml-6 w-full max-w-xs rounded-xl object-cover shadow-md sm:max-w-sm" />`
     case 'heading':
       return `<${node.tag || 'h3'} class="mt-8 mb-3 text-2xl font-bold text-secondary">${inner}</${node.tag || 'h3'}>`
     case 'paragraph':
@@ -71,7 +75,12 @@ function renderMarkdown(md: string): string {
     }
     const inlineFormat = (text: string) => text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
 
-    if (line.startsWith('## ')) {
+    const imageMatch = line.match(/^!\[([^\]]*)\]\(([^)]+)\)$/)
+    if (imageMatch) {
+      closeList()
+      const [, alt, src] = imageMatch
+      html += `<img src="${escapeHtml(src)}" alt="${escapeHtml(alt)}" class="float-right mb-4 ml-6 w-full max-w-xs rounded-xl object-cover shadow-md sm:max-w-sm" />`
+    } else if (line.startsWith('## ')) {
       closeList()
       html += `<h2 class="mt-10 mb-4 text-2xl font-bold text-secondary">${inlineFormat(escapeHtml(line.slice(3)))}</h2>`
     } else if (line.startsWith('### ')) {

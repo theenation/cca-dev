@@ -850,17 +850,12 @@ export interface StudentSectionPage {
         id?: string | null;
       }[]
     | null;
-  cbeSubjects?:
+  scholarshipPhotos?:
     | {
-        name: string;
-        icon?: (number | null) | Media;
+        image: number | Media;
         id?: string | null;
       }[]
     | null;
-  scholarshipText?: string | null;
-  feeStructureText?: string | null;
-  feeStructureUrl?: string | null;
-  brochureUrl?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1038,17 +1033,12 @@ export interface StudentSectionPageSelect<T extends boolean = true> {
         image?: T;
         id?: T;
       };
-  cbeSubjects?:
+  scholarshipPhotos?:
     | T
     | {
-        name?: T;
-        icon?: T;
+        image?: T;
         id?: T;
       };
-  scholarshipText?: T;
-  feeStructureText?: T;
-  feeStructureUrl?: T;
-  brochureUrl?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

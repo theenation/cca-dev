@@ -13,11 +13,11 @@ const nav = [
     label: 'About',
     href: '/about',
     children: [
-      { label: 'Mission and Vision', href: '/about#mission' },
-      { label: 'Chairman Message', href: '/about#chairman' },
-      { label: 'Board of Director', href: '/our-team#board' },
-      { label: 'Faculty Member', href: '/our-team#faculty' },
-      { label: 'Management Team', href: '/our-team#management' },
+      { label: 'Mission and Vision', href: '/about#Mission' },
+      { label: 'Chairman Message', href: '/about#Chairman_Message' },
+      { label: 'Board of Director', href: '/about#Director' },
+      { label: 'Faculty Member', href: '/our-team#Faculty_Member' },
+      { label: 'Management Team', href: '/our-team#Management_Team' },
       { label: 'Accreditation And Membership', href: '/accreditation-and-membership' },
     ],
   },
@@ -31,7 +31,6 @@ const nav = [
     href: '/student-section',
     children: [
       { label: 'Skills/Professional Rank Holders', href: '/student-section#rank-holders' },
-      { label: 'On Demand CBE Rank Holders', href: '/student-section#cbe-rank' },
       { label: 'Student Complain Section', href: '/student-section#complain' },
     ],
   },
@@ -93,16 +92,25 @@ const nav = [
 
     <nav class="hidden items-center gap-1 lg:flex">
       {nav.map((item) => (
-        <div class="group relative">
+        <div class="nav-item relative flex items-center">
           <a
             href={item.href}
-            class="flex items-center gap-1 px-3 py-2 text-sm font-semibold text-secondary hover:text-primary"
+            class="flex items-center gap-1 py-2 pl-3 text-sm font-semibold text-secondary hover:text-primary"
           >
             {item.label}
-            {item.children && <Icon name="chevronDown" class="h-3.5 w-3.5" />}
           </a>
           {item.children && (
-            <div class="invisible absolute left-0 top-full min-w-64 rounded-lg border border-line bg-white py-2 opacity-0 shadow-xl transition-all duration-150 group-hover:visible group-hover:opacity-100">
+            <button
+              type="button"
+              class="nav-toggle grid h-8 w-8 shrink-0 place-items-center rounded-full hover:bg-cloud"
+              aria-label={`Toggle ${item.label} submenu`}
+              aria-expanded="false"
+            >
+              <Icon name="chevronDown" class="nav-toggle-icon h-3.5 w-3.5 transition-transform duration-150" />
+            </button>
+          )}
+          {item.children && (
+            <div class="nav-panel invisible absolute left-0 top-full min-w-64 rounded-lg border border-line bg-white py-2 opacity-0 shadow-xl transition-all duration-150">
               {item.children.map((child) => (
                 <a href={child.href} class="block px-4 py-2 text-sm text-ink hover:bg-cloud hover:text-primary">
                   {child.label}
@@ -149,4 +157,58 @@ const nav = [
   const btn = document.getElementById('mobile-menu-btn')
   const menu = document.getElementById('mobile-menu')
   btn?.addEventListener('click', () => menu?.classList.toggle('hidden'))
+
+  const navItems = Array.from(document.querySelectorAll<HTMLElement>('.nav-item'))
+
+  function closeItem(item: HTMLElement) {
+    const panel = item.querySelector<HTMLElement>('.nav-panel')
+    const toggle = item.querySelector<HTMLElement>('.nav-toggle')
+    const icon = item.querySelector<HTMLElement>('.nav-toggle-icon')
+    panel?.classList.remove('visible', 'opacity-100')
+    panel?.classList.add('invisible', 'opacity-0')
+    toggle?.setAttribute('aria-expanded', 'false')
+    icon?.classList.remove('rotate-180')
+  }
+
+  function openItem(item: HTMLElement) {
+    navItems.forEach((other) => other !== item && closeItem(other))
+    const panel = item.querySelector<HTMLElement>('.nav-panel')
+    const toggle = item.querySelector<HTMLElement>('.nav-toggle')
+    const icon = item.querySelector<HTMLElement>('.nav-toggle-icon')
+    panel?.classList.remove('invisible', 'opacity-0')
+    panel?.classList.add('visible', 'opacity-100')
+    toggle?.setAttribute('aria-expanded', 'true')
+    icon?.classList.add('rotate-180')
+  }
+
+  function isOpen(item: HTMLElement) {
+    return item.querySelector('.nav-panel')?.classList.contains('visible')
+  }
+
+  const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches
+
+  navItems.forEach((item) => {
+    const toggle = item.querySelector<HTMLElement>('.nav-toggle')
+    toggle?.addEventListener('click', (e) => {
+      e.preventDefault()
+      e.stopPropagation()
+      isOpen(item) ? closeItem(item) : openItem(item)
+    })
+
+    if (canHover) {
+      item.addEventListener('mouseenter', () => openItem(item))
+      item.addEventListener('mouseleave', () => closeItem(item))
+    }
+  })
+
+  document.addEventListener('click', (e) => {
+    if (!(e.target instanceof Node)) return
+    navItems.forEach((item) => {
+      if (!item.contains(e.target as Node)) closeItem(item)
+    })
+  })
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') navItems.forEach(closeItem)
+  })
 </script>

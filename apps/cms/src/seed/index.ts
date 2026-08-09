@@ -232,7 +232,12 @@ async function run() {
         flushList()
         continue
       }
-      if (line.startsWith('## ')) {
+      const imageMatch = line.match(/^!\[([^\]]*)\]\(([^)]+)\)$/)
+      if (imageMatch) {
+        flushList()
+        const [, alt, src] = imageMatch
+        children.push({ type: 'image', alt, src, version: 1 })
+      } else if (line.startsWith('## ')) {
         flushList()
         children.push({
           type: 'heading',
@@ -325,7 +330,7 @@ async function run() {
       introAccent: 'Reach Us !',
       introText:
         'Experience seamless communication with our innovative contact solutions. Connect with confidence and never miss a beat.',
-      mapEmbedUrl: 'https://www.google.com/maps?q=Thapagaun,New+Baneshwar,Kathmandu&output=embed',
+      mapEmbedUrl: 'https://www.google.com/maps?q=27.6919151,85.3308987&z=17&output=embed',
     },
   })
   payload.logger.info('✔ Contact page')
@@ -337,12 +342,11 @@ async function run() {
   const nepalRankImages = await Promise.all(
     Array.from({ length: 11 }, (_, i) => uploadImage(`student-section/nepal-rank/${i + 1}.webp`, `Nepal rank holder ${i + 1}`)),
   )
-  const [faIcon, btIcon, maIcon, lwIcon] = await Promise.all([
-    uploadImage('student-section/cbe-icons/fa.png', 'Financial Accounting (FA)'),
-    uploadImage('student-section/cbe-icons/bt.png', 'Business Technology (BT)'),
-    uploadImage('student-section/cbe-icons/ma.png', 'Management Accounting (MA)'),
-    uploadImage('student-section/cbe-icons/lw.png', 'Law (LW)'),
-  ])
+  const scholarshipImages = await Promise.all(
+    Array.from({ length: 26 }, (_, i) =>
+      uploadImage(`student-section/scholarship-holders/${i + 1}.webp`, `CCA Scholarship Holder ${i + 1}`),
+    ),
+  )
 
   await payload.updateGlobal({
     slug: 'student-section-page',
@@ -351,17 +355,7 @@ async function run() {
       heroSubtitle: "Celebrating our top-performing students and supporting every learner's journey.",
       worldRankPhotos: worldRankImages.map((image) => ({ image })),
       nepalRankPhotos: nepalRankImages.map((image) => ({ image })),
-      cbeSubjects: [
-        { name: 'Financial Accounting (FA)', icon: faIcon },
-        { name: 'Business Technology (BT)', icon: btIcon },
-        { name: 'Management Accounting (MA)', icon: maIcon },
-        { name: 'Law (LW)', icon: lwIcon },
-      ],
-      scholarshipText: '',
-      feeStructureText:
-        'It is a fund created by CCA from its annual revenue in order to assist deserving candidates. This scholarship covers the full tuition fee for Applied Knowledge Level and LW. Interested students have to participate in CCA Scholarship Fund Exam held in each batch and the students who secure the highest mark will be provided with this scholarship.',
-      feeStructureUrl: '/uploads/Fee-Structure-CCA.pdf',
-      brochureUrl: '/uploads/CCA-Brochure.pdf',
+      scholarshipPhotos: scholarshipImages.map((image) => ({ image })),
     },
   })
   payload.logger.info('✔ Student section page')
@@ -485,7 +479,7 @@ async function run() {
       passPercentage: '92% above',
       order: 3,
       featured: true,
-      content: `## Licensed CBE Centre\nOn-demand CBE allows flexibility in your studies as you can sit exams at any time of the year.`,
+      content: `## Licensed CBE Centre\n![On Demand Licensed CBE Centre](/images/cbe-centre.webp)\nOn-demand CBE allows flexibility in your studies as you can sit exams at any time of the year.`,
     },
     {
       slug: 'diploma-in-ifrs',
@@ -604,22 +598,49 @@ async function run() {
 
   // ---------- Team Members ----------
   const teamSeeds = [
-    { name: 'Mr. Govinda Raj Panta', role: 'Managing Director', group: 'board', image: 'team/govinda-raj-panta.webp' },
-    { name: 'Mr. Manish Sharma', role: 'Director Of Marketing', group: 'board', image: 'team/manish-sharma.webp' },
-    { name: 'Mr. Diwas Silwal', role: 'Director of Academics', group: 'board', image: 'team/diwas-silwal.webp' },
-    { name: 'Sunita Dhanuk', role: 'Operational Officer', group: 'management', image: 'team/sunita-dhanuk.webp' },
-    { name: 'Nitin Tiwari', role: 'Admin Support Officer', group: 'management', image: 'team/nitin-tiwari.webp' },
-    { name: 'Santoshi Shrestha', role: 'Admin Officer', group: 'management', image: 'team/santoshi-shrestha.webp' },
-    { name: 'Ramiz Raja Hussain', role: 'Lecturer', group: 'faculty', image: 'team/ramiz-raja-hussain.webp' },
-    { name: 'Saroj Dangal', role: 'Lecturer', group: 'faculty', image: 'team/saroj-dangal.webp' },
-    { name: 'Saroj Budhathoki', role: 'Lecturer', group: 'faculty', image: 'team/saroj-budhathoki.webp' },
-    { name: 'Sujan Aryal', role: 'Lecturer', group: 'faculty', image: 'team/sujan-aryal.webp' },
+    {
+      name: 'Mr. Govinda Raj Panta',
+      role: 'Managing Director',
+      group: 'board',
+      image: 'team/govinda-raj-panta.webp',
+      socials: [
+        { platform: 'facebook', url: 'https://www.facebook.com/share/1aZ8fNvsaP/?mibextid=wwXIfr' },
+        { platform: 'instagram', url: 'https://www.instagram.com/govinda_raj_panta/' },
+      ],
+    },
+    {
+      name: 'Mr. Manish Sharma',
+      role: 'Director Of Marketing',
+      group: 'board',
+      image: 'team/manish-sharma.webp',
+      socials: [
+        { platform: 'facebook', url: 'https://www.facebook.com/share/1CweBqXUnQ/?mibextid=wwXIfr' },
+        { platform: 'instagram', url: 'https://www.instagram.com/manisssigdel/' },
+      ],
+    },
+    {
+      name: 'Mr. Diwas Silwal',
+      role: 'Director of Academics',
+      group: 'board',
+      image: 'team/diwas-silwal.webp',
+      socials: [
+        { platform: 'linkedin', url: 'http://linkedin.com/in/diwas-silwal-1b0770114' },
+        { platform: 'instagram', url: 'https://www.instagram.com/thediwas/' },
+      ],
+    },
+    { name: 'Sunita Dhanuk', role: 'Operational Officer', group: 'management', image: 'team/sunita-dhanuk.webp', socials: [] },
+    { name: 'Nitin Tiwari', role: 'Admin Support Officer', group: 'management', image: 'team/nitin-tiwari.webp', socials: [] },
+    { name: 'Santoshi Shrestha', role: 'Admin Officer', group: 'management', image: 'team/santoshi-shrestha.webp', socials: [] },
+    { name: 'Ramiz Raja Hussain', role: 'Lecturer', group: 'faculty', image: 'team/ramiz-raja-hussain.webp', socials: [] },
+    { name: 'Saroj Dangal', role: 'Lecturer', group: 'faculty', image: 'team/saroj-dangal.webp', socials: [] },
+    { name: 'Saroj Budhathoki', role: 'Lecturer', group: 'faculty', image: 'team/saroj-budhathoki.webp', socials: [] },
+    { name: 'Sujan Aryal', role: 'Lecturer', group: 'faculty', image: 'team/sujan-aryal.webp', socials: [] },
   ] as const
 
   for (const [i, m] of teamSeeds.entries()) {
     const imageId = await uploadImage(m.image, m.name)
     const existing = await payload.find({ collection: 'team-members', where: { name: { equals: m.name } }, limit: 1 })
-    const data = { name: m.name, role: m.role, group: m.group, image: imageId, order: i }
+    const data = { name: m.name, role: m.role, group: m.group, image: imageId, socials: m.socials, order: i }
     if (existing.docs[0]) await payload.update({ collection: 'team-members', id: existing.docs[0].id, data })
     else await payload.create({ collection: 'team-members', data })
   }

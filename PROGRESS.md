@@ -706,3 +706,95 @@ Vercel project; set `apps/web`'s `PAYLOAD_URL`/`PUBLIC_PAYLOAD_URL` to the
 deployed CMS's Vercel URL. Full steps given directly to the user in-chat,
 not duplicated here since they're one-time setup, not something future
 sessions need to re-derive from this file.
+
+## Session 2 continued — production db migrations (Turso `/admin` was erroring)
+After the user actually deployed per the above, `/admin/login` on the live
+Vercel CMS threw `SQLITE_UNKNOWN: no such table: users`. Root cause: this
+project has always relied on `@payloadcms/db-sqlite`'s **push mode** (auto
+schema-sync, the default behavior outside `NODE_ENV=production`) — fine for
+local `next dev`, but `next build`/`next start` (i.e. what Vercel actually
+runs) doesn't auto-push, it expects real migration files to already exist
+and be applied. This project never had a `migrations/` directory, so the
+Turso database Vercel was pointed at was completely empty — no tables at
+all, hence "no such table: users" on the very first query.
+
+Fix:
+- Ran `payload migrate:create initial-setup` locally (against the local dev
+  db, which already had the full schema from push mode) → generated
+  `apps/cms/src/migrations/20260802_125931_initial_setup.ts` (536 lines,
+  one `CREATE TABLE`/`CREATE INDEX` per collection/global — this **must be
+  committed to git**, it's the schema source of truth for every future
+  deploy, not a local-only artifact like `cms.db`).
+- Added `migrate`, `migrate:create`, and (originally) `ci` scripts to
+  `apps/cms/package.json`, plus a `pnpm ci` Vercel Build Command instruction
+  — **this broke**: pnpm reserves the bare word `ci` as one of its own
+  (not-yet-implemented) built-in subcommands, so `pnpm ci` never reaches the
+  same-named package.json script at all (`ERR_PNPM_CI_NOT_IMPLEMENTED`),
+  regardless of what's in `scripts`. `pnpm run ci` would have worked (`run`
+  forces pnpm to look up a script, skipping the built-in-command check) but
+  to avoid this whole class of footgun renamed the script to
+  **`vercel-build`** instead (`"vercel-build": "pnpm run migrate && pnpm run
+  build"`) — doesn't collide with anything, and also happens to match
+  Vercel's own auto-detected script-name convention for some frameworks, so
+  it reads as intentional either way. **Lesson: don't name a package.json
+  script after a common CLI verb (`ci`, `install`, `link`, `add`, `run`,
+  etc.) without testing `pnpm run <script>` args on the command line first —
+  package managers reserve those words for themselves.**
+- Verified the actual fix (not just that the script resolves) by running
+  `payload migrate` against a completely fresh, empty local sqlite file
+  (`file:/tmp/.../test-migrate.db`) to simulate the empty-Turso-DB scenario
+  exactly — confirmed it creates every table including `users` in ~120ms,
+  then confirmed local dev (which still runs in push mode, untouched by any
+  of this) still boots clean and the existing local `cms.db` content is
+  unaffected (media count still 54, idempotent).
+
+**User still needs to**: commit + push `apps/cms/src/migrations/` and the
+updated `package.json`, change the CMS Vercel project's Build Command to
+`pnpm run vercel-build` (**not** `pnpm vercel-build` — technically works
+since `vercel-build` doesn't collide with a reserved word, but `pnpm run
+<script>` is the unambiguous form and what's been verified), redeploy,
+confirm `/admin` now shows "create first admin user" instead of erroring,
+then run `pnpm seed` locally against the Turso credentials to populate
+content (per the earlier deployment steps — still pending as of this
+update).
+
+## Session 2 continued — deployment troubleshooting round 2 (seeding against prod)
+Continuing directly from the migration fix above — the user got past the
+`/admin` error (migration applied fine) and moved on to seeding the live
+Turso database, which surfaced two more real deployment issues. Both are
+now understood and explained to the user; **neither required a code change**
+— they're Vercel/Turso account-configuration issues, not bugs in this repo.
+
+1. **User asked**: since Turso is already handling the database, is
+   `BLOB_READ_WRITE_TOKEN` (Vercel Blob) still necessary? **Yes** — clarified
+   that Turso and Blob solve two independent problems: Turso stores the
+   *database rows* (including each Media doc's metadata — filename, alt
+   text, dimensions), but never stores actual file bytes. Without a storage
+   adapter, Payload's default is local disk, which doesn't work at all on
+   Vercel serverless (read-only filesystem outside `/tmp`, and `/tmp` itself
+   doesn't persist between invocations) — so both are required together for
+   uploads to actually work in production, not either/or.
+2. **Then hit a real error while seeding**: `Vercel Blob: Cannot use public
+   access on a private store.` The user's Blob store was created with
+   *Private* access mode, but `@payloadcms/storage-vercel-blob` uploads with
+   `access: 'public'` by default (correct for this project — course photos,
+   team headshots etc. are meant to be viewed by any site visitor, not
+   authenticated/signed-URL-gated). Researched Vercel's current (2026) Blob
+   docs to confirm: **access mode (public/private) is set once at store
+   creation and cannot be changed afterward** — there's no dashboard toggle
+   to flip an existing store from private to public. Fix given to the user:
+   create a *new* Blob store choosing Public access this time, swap
+   `BLOB_READ_WRITE_TOKEN` on the CMS Vercel project to the new store's
+   token, redeploy, then re-run the seed command. No need to clean up
+   anything from the failed attempt first — `uploadImage()`'s `sourceKey`
+   dedup check (see the seed-idempotency work earlier in this file) means
+   re-running seed after the fix just resumes/retries, it won't duplicate
+   whatever partially succeeded before the error hit.
+
+**Status as of this update**: migration fix is presumably deployed
+(unblocked `/admin`), but the production database is likely still only
+partially seeded (seed run failed partway through on the Blob upload step)
+until the user creates a public Blob store and re-runs `pnpm seed` against
+Turso + the new token. Worth checking this first thing next session if
+picking this up — ask whether the reseed with the public store completed
+successfully, and if the live site is showing real content/images yet.
