@@ -22,7 +22,7 @@ export const siteSettings = {
 }
 
 export const homePage = {
-  heroTitle: 'ACCA College in Kathmandu, Nepal | Study ACCA at CCA',
+  heroTitle: 'Certified College of Accountancy',
   heroSubtitle:
     'Certified College of Accountancy (CCA) is a leading ACCA college in Kathmandu, Nepal, recognized as a Platinum Approved Learning Partner by ACCA. With high pass rates, experienced faculty, and career-focused training, CCA is the trusted choice in Kathmandu for students pursuing global accounting careers.',
   heroImage: { url: '/images/hero-bg.webp' },
@@ -58,7 +58,7 @@ export const homePage = {
   aboutTitle: 'About Us',
   aboutText:
     'Certified College of Accountancy (CCA) is a leading ACCA college in Kathmandu, Nepal, offering internationally recognized ACCA courses for students after +2 and bachelor level studies. As a Platinum Approved Learning Partner approved by ACCA, CCA has become a preferred destination for students looking to build successful careers in accounting, auditing, taxation, and finance.\n\nWith over 20 years of ACCA education excellence, experienced ACCA faculty members, scholarship facilities, career support, mock exams, and consistently high pass rates, CCA is widely recognized as one of the best ACCA colleges in Nepal.',
-  aboutImage: { url: '/images/reception.webp' },
+  aboutImage: { url: '/images/about-us.webp' },
   aboutStats: [
     { label: 'Pass Percentage', value: 91 },
     { label: 'Students Satisfaction', value: 96 },

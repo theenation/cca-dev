@@ -5,7 +5,7 @@ import { getSiteSettings, getCourses, mediaUrl } from '../lib/cms'
 
 const settings = await getSiteSettings()
 const courses = await getCourses()
-const logoUrl = mediaUrl(settings.logo, '/images/logo.png')
+const logoUrl = mediaUrl(settings.logo, '/images/logo-transparent.webp')
 ---
 
 <footer class="bg-secondary text-white">
@@ -34,23 +34,11 @@ const logoUrl = mediaUrl(settings.logo, '/images/logo.png')
 
     <div>
       <h3 class="text-lg font-bold text-white">Accreditation</h3>
-      <div class="mt-4 flex flex-col gap-3">
-        <span class="flex items-center gap-3 text-sm text-white/80">
-          <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/10 text-accent"><Icon name="award" class="h-5 w-5" /></span>
-          ACCA Approved Employer
-        </span>
-        <span class="flex items-center gap-3 text-sm text-white/80">
-          <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/10 text-accent"><Icon name="list" class="h-5 w-5" /></span>
-          Licensed CBE Centre
-        </span>
-        <span class="flex items-center gap-3 text-sm text-white/80">
-          <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/10 text-accent"><Icon name="shield" class="h-5 w-5" /></span>
-          ACCA Approved Learning Partner
-        </span>
-        <span class="flex items-center gap-3 text-sm text-white/80">
-          <span class="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/10 text-accent"><Icon name="star" class="h-5 w-5" /></span>
-          ISO 9001:2015 Certified
-        </span>
+      <div class="mt-4 grid grid-cols-2 gap-3">
+        <SmartImage src="/images/accreditation/accredation-image1.webp" alt="Accreditation 1" class="h-20 w-full object-contain" />
+        <SmartImage src="/images/accreditation/accredation-image2.webp" alt="Accreditation 2" class="h-20 w-full object-contain" />
+        <SmartImage src="/images/accreditation/accredation-image3.webp" alt="Accreditation 3" class="h-20 w-full object-contain" />
+        <SmartImage src="/images/accreditation/accredation-image4.webp" alt="Accreditation 4" class="h-20 w-full object-contain" />
       </div>
     </div>
   </div>
