@@ -245,7 +245,7 @@ const whatsappLink = settings.whatsapp ? `https://api.whatsapp.com/send?phone=${
       <SectionHeading title="Review's From" accent="Students" subtitle="Before you study, let reviews light your path; after you learn, share your success story." />
     </div>
     <div class="marquee-wrap relative mt-14 overflow-hidden px-6">
-      <div class="marquee-track testimonial-marquee-track flex w-max gap-6">
+      <div id="testimonial-track" class="flex w-max gap-6" style="will-change:transform">
         {[...testimonials, ...testimonials].map((t) => (
           <div class="w-[360px] shrink-0">
             <TestimonialCard testimonial={t} />
@@ -261,7 +261,7 @@ const whatsappLink = settings.whatsapp ? `https://api.whatsapp.com/send?phone=${
       <SectionHeading title="Our Placement" accent="Partners" subtitle="We have now joined hands with different companies to provide skill development training and placement opportunities to our students" />
     </div>
     <div class="marquee-wrap relative mt-14 overflow-hidden px-6">
-      <div class="marquee-track flex w-max gap-6">
+      <div id="partners-track" class="flex w-max gap-6" style="will-change:transform">
         {[...partners, ...partners].map((p) => (
           <div class="grid h-32 w-40 shrink-0 place-items-center rounded-xl border border-line bg-white p-4">
             <SmartImage src={mediaUrl(p.logo, '')} alt={p.name} class="max-h-20 max-w-full object-contain" />
@@ -270,4 +270,38 @@ const whatsappLink = settings.whatsapp ? `https://api.whatsapp.com/send?phone=${
       </div>
     </div>
   </section>
+
+  <script>
+    function initMarquee(trackId: string, speed: number) {
+      const track = document.getElementById(trackId)
+      if (!track) return
+      const half = Math.floor(track.children.length / 2)
+      if (half === 0) return
+
+      // Measure exact loop point: left edge of first duplicate relative to track
+      const trackLeft = track.getBoundingClientRect().left
+      const dupLeft = (track.children[half] as HTMLElement).getBoundingClientRect().left
+      const loopAt = dupLeft - trackLeft
+
+      let pos = 0
+      let paused = false
+
+      const wrap = track.closest('.marquee-wrap')
+      wrap?.addEventListener('mouseenter', () => { paused = true })
+      wrap?.addEventListener('mouseleave', () => { paused = false })
+
+      function tick() {
+        if (!paused) {
+          pos -= speed
+          if (pos <= -loopAt) pos += loopAt
+          track!.style.transform = `translateX(${pos}px)`
+        }
+        requestAnimationFrame(tick)
+      }
+      requestAnimationFrame(tick)
+    }
+
+    initMarquee('testimonial-track', 0.5)
+    initMarquee('partners-track', 0.4)
+  </script>
 </Layout>
