@@ -429,6 +429,14 @@ async function run() {
   payload.logger.info('✔ Accreditation page')
 
   // ---------- Courses ----------
+  const facultyBlock = {
+    description:
+      "CCA's faculty comprises highly qualified educators and seasoned tutors specialising in ACCA, including FCAs and FCCAs, bringing a wealth of expertise and experience to our academic team.",
+    quote: 'We believe the best faculty members are the assets and guiding tools for any student to go through exams.',
+    name: 'Mr. Diwas Silwal',
+    title: 'Director of Academics',
+  }
+
   const courseSeeds = [
     {
       slug: 'acca',
@@ -446,6 +454,98 @@ async function run() {
       order: 1,
       featured: true,
       content: `## What is ACCA?\nACCA stands for Association of Chartered Certified Accountants, one of the world's leading professional accounting bodies.\n\n## Why Study ACCA at CCA College?\n1. Platinum Approved Learning Partner (ALP)\n2. Nepal's Only ISO Certified ACCA College\n3. Licensed CBE Centre\n4. Approved by Ministry of Social Development, Nepal Government\n5. ACCA Approved Employer\n6. Student-Centered Learning Environment`,
+      awardingBody: 'ACCA (UK)',
+      intake: 'March / June / September / December',
+      highlights: [
+        { icon: 'globe', label: '180+ Countries' },
+        { icon: 'award', label: 'Platinum Learning Partner' },
+        { icon: 'monitor', label: 'On-Demand CBE Centre' },
+        { icon: 'users', label: '5000+ Students' },
+      ],
+      benefits: [
+        {
+          icon: 'monitor',
+          title: 'On-Demand CBE Centre',
+          description: 'Sit BT, MA, FA and LW computer-based exams at any time — not restricted to the four ACCA exam sessions a year.',
+        },
+        {
+          icon: 'scholarship',
+          title: 'OBU BSc Mentorship',
+          description: 'Earn the BSc (Hons) in Applied Accounting from Oxford Brookes University alongside your ACCA studies.',
+        },
+        {
+          icon: 'briefcase',
+          title: 'Career Flexibility',
+          description: 'Qualify to work in any sector nationally and internationally across accounting, audit, tax and finance roles.',
+        },
+      ],
+      curriculum: [
+        {
+          levelTitle: 'Level 1 — Applied Knowledge',
+          papers: [
+            { code: 'BT', title: 'Business and Technology' },
+            { code: 'MA', title: 'Management Accounting' },
+            { code: 'FA', title: 'Financial Accounting' },
+          ],
+        },
+        {
+          levelTitle: 'Level 2 — Applied Skills',
+          papers: [
+            { code: 'LW', title: 'Corporate and Business Law' },
+            { code: 'PM', title: 'Performance Management' },
+            { code: 'TX', title: 'Taxation' },
+            { code: 'FR', title: 'Financial Reporting' },
+            { code: 'AA', title: 'Audit and Assurance' },
+            { code: 'FM', title: 'Financial Management' },
+          ],
+        },
+        {
+          levelTitle: 'Level 3 — Strategic Professional',
+          levelSubtitle: 'Essentials',
+          papers: [
+            { code: 'SBL', title: 'Strategic Business Leader' },
+            { code: 'SBR', title: 'Strategic Business Reporting' },
+          ],
+        },
+        {
+          levelTitle: 'Level 3 — Strategic Professional',
+          levelSubtitle: 'Options — choose any two',
+          papers: [
+            { code: 'AFM', title: 'Advanced Financial Management' },
+            { code: 'APM', title: 'Advanced Performance Management' },
+            { code: 'ATX', title: 'Advanced Taxation' },
+            { code: 'AAA', title: 'Advanced Audit and Assurance' },
+          ],
+        },
+      ],
+      careerOpportunities: [
+        'Auditing',
+        'Tax Consulting',
+        'Financial Control',
+        'Management Accountancy',
+        'Treasury Consultancy',
+        'Business Analysis',
+      ].map((title) => ({ title })),
+      entryRequirements: [
+        {
+          title: 'Applied Knowledge Level / FIA',
+          points: [
+            { text: '10+2 / SEE (A–C) in five separate subjects including Mathematics & English' },
+            { text: 'or 2 passes at GCE / A-Level (grades A–E)' },
+          ],
+        },
+        {
+          title: 'Applied Skills Level',
+          points: [{ text: 'FIA/ACCA Applied Knowledge level papers passed or exempted' }],
+        },
+        {
+          title: 'Strategic Professional Level',
+          points: [{ text: 'ACCA Applied Knowledge and Applied Skills level papers passed or exempted' }],
+        },
+      ],
+      entryNote:
+        'Applicants who do not meet the minimum entry requirements can complete the Foundations in Accountancy route before progressing directly into the ACCA qualification.',
+      faculty: facultyBlock,
     },
     {
       slug: 'bbs',
@@ -463,6 +563,38 @@ async function run() {
       order: 2,
       featured: true,
       content: `## About BBS\nBBS (Bachelor of Business Studies) is a four year degree program conducted by Tribhuvan University (TU), Faculty of Management (FOM).`,
+      awardingBody: 'Tribhuvan University (TU)',
+      intake: 'Annual intake (Falgun)',
+      highlights: [
+        { icon: 'layers', label: '8 Semesters' },
+        { icon: 'users', label: '1000+ Students' },
+        { icon: 'percent', label: '85% Pass Rate' },
+        { icon: 'award', label: 'TU Affiliated' },
+      ],
+      benefits: [
+        {
+          icon: 'book',
+          title: 'Broad Management Foundation',
+          description: 'Covers accounting, finance, marketing and management, preparing students for a wide range of business careers.',
+        },
+        {
+          icon: 'users',
+          title: 'Experienced Faculty',
+          description: 'Taught by experienced lecturers with strong academic and industry backgrounds.',
+        },
+        {
+          icon: 'briefcase',
+          title: 'Pathway to ACCA',
+          description: 'A solid academic base for students who want to pursue ACCA or other professional studies afterwards.',
+        },
+      ],
+      careerOpportunities: ['Accounting', 'Banking & Finance', 'Business Administration', 'Marketing', 'Entrepreneurship'].map(
+        (title) => ({ title }),
+      ),
+      entryRequirements: [
+        { title: 'Eligibility', points: [{ text: '+2 (or equivalent) in any stream from a recognised board' }] },
+      ],
+      faculty: facultyBlock,
     },
     {
       slug: 'cbe',
@@ -480,6 +612,41 @@ async function run() {
       order: 3,
       featured: true,
       content: `## Licensed CBE Centre\n![On Demand Licensed CBE Centre](/images/cbe-centre.webp)\nOn-demand CBE allows flexibility in your studies as you can sit exams at any time of the year.`,
+      awardingBody: 'ACCA (UK)',
+      intake: 'Available year-round',
+      highlights: [
+        { icon: 'monitor', label: '4 On-Demand Papers' },
+        { icon: 'clock', label: 'Sit Anytime' },
+        { icon: 'users', label: '2000+ Students' },
+        { icon: 'percent', label: '92% Pass Rate' },
+      ],
+      benefits: [
+        {
+          icon: 'monitor',
+          title: 'Licensed CBE Centre',
+          description: 'CCA is an ACCA-approved on-demand CBE centre for the BT, MA, FA and LW papers.',
+        },
+        {
+          icon: 'clock',
+          title: 'Total Flexibility',
+          description: 'Book and sit your exam whenever you are ready, without waiting for a fixed exam session.',
+        },
+        {
+          icon: 'check',
+          title: 'Faster Results',
+          description: 'Computer-based exams are marked automatically, so results come back sooner.',
+        },
+      ],
+      careerOpportunities: ['Accounting Assistant', 'Audit Trainee', 'Finance Executive', 'Tax Associate'].map((title) => ({
+        title,
+      })),
+      entryRequirements: [
+        {
+          title: 'Eligibility',
+          points: [{ text: 'Open to all active ACCA and FIA students registered for BT, MA, FA or LW' }],
+        },
+      ],
+      faculty: facultyBlock,
     },
     {
       slug: 'diploma-in-ifrs',
@@ -497,6 +664,41 @@ async function run() {
       order: 4,
       featured: false,
       content: `## Diploma in IFRS\nThe Diploma in International Financial Reporting Standards (DipIFR) equips accounting professionals with a deep understanding of IFRS.`,
+      awardingBody: 'ACCA (UK)',
+      intake: 'Rolling intake',
+      highlights: [
+        { icon: 'globe', label: 'Global Standard' },
+        { icon: 'clock', label: '6 Months' },
+        { icon: 'users', label: '300+ Students' },
+        { icon: 'percent', label: '88% Pass Rate' },
+      ],
+      benefits: [
+        {
+          icon: 'globe',
+          title: 'Globally Recognised',
+          description: 'IFRS is the reporting language used by companies in over 100 countries.',
+        },
+        {
+          icon: 'briefcase',
+          title: 'Career Advancement',
+          description: 'Strengthens your profile for roles in audit, financial reporting and multinational finance teams.',
+        },
+        {
+          icon: 'book',
+          title: 'Practical Curriculum',
+          description: 'Covers the standards most used in real-world financial statements, taught by practising professionals.',
+        },
+      ],
+      careerOpportunities: ['Financial Reporting', 'External Audit', 'Group Consolidation', 'Corporate Finance'].map((title) => ({
+        title,
+      })),
+      entryRequirements: [
+        {
+          title: 'Recommended Background',
+          points: [{ text: 'A relevant accounting qualification, or at least two years of relevant accounting experience' }],
+        },
+      ],
+      faculty: facultyBlock,
     },
     {
       slug: 'certificate-in-international-financial-reporting-cert-ifr',
@@ -513,6 +715,39 @@ async function run() {
       order: 5,
       featured: false,
       content: `## Certificate in International Financial Reporting\nThe Cert IFR provides a solid grounding in the principles and practicalities of IFRS.`,
+      awardingBody: 'ACCA (UK)',
+      intake: 'Rolling intake',
+      highlights: [
+        { icon: 'book', label: 'Foundational Course' },
+        { icon: 'clock', label: '3 Months' },
+        { icon: 'users', label: '200+ Students' },
+        { icon: 'percent', label: '87% Pass Rate' },
+      ],
+      benefits: [
+        {
+          icon: 'book',
+          title: 'Solid IFRS Grounding',
+          description: 'Builds a working knowledge of the core principles and practicalities of IFRS.',
+        },
+        {
+          icon: 'clock',
+          title: 'Short & Focused',
+          description: 'A compact course designed to fit around a working schedule.',
+        },
+        {
+          icon: 'briefcase',
+          title: 'Stepping Stone',
+          description: 'A natural first step before progressing to the Diploma in IFRS.',
+        },
+      ],
+      careerOpportunities: ['Accounts Executive', 'Finance Assistant', 'Reporting Analyst'].map((title) => ({ title })),
+      entryRequirements: [
+        {
+          title: 'Recommended Background',
+          points: [{ text: 'A basic understanding of financial accounting is helpful but not required' }],
+        },
+      ],
+      faculty: facultyBlock,
     },
     {
       slug: 'bsc-hons-degree-in-applied-accounting',
@@ -530,6 +765,44 @@ async function run() {
       order: 6,
       featured: false,
       content: `## BSc (Hons) Degree in Applied Accounting\nAwarded by Oxford Brookes University (UK), available exclusively to ACCA students who have completed the Applied Skills level.`,
+      awardingBody: 'Oxford Brookes University (UK)',
+      intake: 'November & May submission cycles',
+      highlights: [
+        { icon: 'award', label: 'UK Honours Degree' },
+        { icon: 'users', label: '800+ Students' },
+        { icon: 'percent', label: '90% Pass Rate' },
+        { icon: 'layers', label: 'Concurrent with ACCA' },
+      ],
+      benefits: [
+        {
+          icon: 'award',
+          title: 'Earn a UK Degree',
+          description: 'Awarded by Oxford Brookes University alongside your ACCA studies, without sitting extra exams.',
+        },
+        {
+          icon: 'teacher',
+          title: 'Mentorship Included',
+          description: 'Guided support through the Research and Analysis Project (RAP) from CCA mentors.',
+        },
+        {
+          icon: 'briefcase',
+          title: 'Boosts Employability',
+          description: "A recognised bachelor's degree strengthens job and further-study applications worldwide.",
+        },
+      ],
+      careerOpportunities: ['Graduate Finance Roles', 'Further Postgraduate Study', 'International Career Mobility'].map(
+        (title) => ({ title }),
+      ),
+      entryRequirements: [
+        {
+          title: 'Eligibility',
+          points: [
+            { text: 'Completion of the ACCA Applied Skills level' },
+            { text: 'Completion of the Ethics and Professional Skills module' },
+          ],
+        },
+      ],
+      faculty: facultyBlock,
     },
   ] as const
 
@@ -552,6 +825,15 @@ async function run() {
       order: c.order,
       featured: c.featured,
       content: markdownToLexical(c.content),
+      awardingBody: c.awardingBody,
+      intake: c.intake,
+      highlights: [...c.highlights],
+      benefits: [...c.benefits],
+      curriculum: 'curriculum' in c ? c.curriculum.map((l) => ({ ...l, papers: [...l.papers] })) : [],
+      careerOpportunities: [...c.careerOpportunities],
+      entryRequirements: c.entryRequirements.map((r) => ({ ...r, points: [...r.points] })),
+      entryNote: 'entryNote' in c ? c.entryNote : undefined,
+      faculty: c.faculty,
     }
     if (existing.docs[0]) {
       await payload.update({ collection: 'courses', id: existing.docs[0].id, data })

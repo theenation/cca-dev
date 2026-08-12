@@ -798,3 +798,201 @@ until the user creates a public Blob store and re-runs `pnpm seed` against
 Turso + the new token. Worth checking this first thing next session if
 picking this up — ask whether the reseed with the public store completed
 successfully, and if the live site is showing real content/images yet.
+
+## Session 3 — `/we-offer` course detail page redesign (British Professional College reference)
+User asked for the "we offer" pages (`apps/web/src/pages/we-offer/`) to be
+redesigned to match the layout/UI of
+`britishprofessionalcollege.edu.np/course/acca-programme` as closely as
+possible, while **keeping this site's own color palette** (`--color-primary`
+#333485, `--color-secondary` #1B2132, `--color-accent` #00A651 — unchanged).
+Studied the reference page live via browser automation (its content loads
+client-side, so a plain fetch returned an empty shell) since a direct
+`WebFetch` was blocked by a 403. Confirmed with the user via
+`AskUserQuestion` that this meant a **full structural rebuild** (not just a
+restyle), which requires new CMS fields since the existing `Courses`
+collection only had `duration`/`levels`/`students`/`passPercentage` +
+freeform `content` — nothing structured enough for a benefits grid,
+curriculum-by-level, career chips, etc.
+
+**Reference page structure that was replicated** (course detail page only):
+hero → floating 4-column info card (Awarding Body / Level / Duration /
+Intake, overlapping the hero's bottom edge) → "Overview" prose section →
+full-width stat/highlights band → "Key benefits" icon-card grid (3 cols) →
+"Programme papers" curriculum grouped by level → "Career opportunities"
+pill/chip list → "Entry requirements" (bullet lists per requirement group)
+→ "Faculty" (description + quote + name/title) → closing gradient CTA
+banner → "Explore More Courses" grid (kept from the original page).
+
+### CMS changes (`apps/cms`)
+- `src/collections/Courses.ts` — added `awardingBody`, `intake`,
+  `highlights[]` (icon+label), `benefits[]` (icon+title+description),
+  `curriculum[]` (levelTitle+levelSubtitle+papers[]), `careerOpportunities[]`,
+  `entryRequirements[]` (title+points[]) + `entryNote`, and a `faculty` group
+  (description/quote/name/title). All optional — pages render each section
+  conditionally so courses with sparse data degrade gracefully instead of
+  showing empty blocks.
+- `src/collections/Courses.ts` — added an `ICON_OPTIONS` select list (16
+  icon keys) reused by both `highlights.icon` and `benefits.icon`.
+- Ran `payload generate:types` (regenerates `src/payload-types.ts`).
+- Generated a real migration: `src/migrations/20260810_160946_add_course_detail_fields.{ts,json}`
+  (registered in `src/migrations/index.ts`). **Note on how this was done**:
+  `payload migrate:create` prompts interactively per new table ("created or
+  renamed from another table?") and piping plain newlines into it did
+  nothing (raw-mode keypress prompt, not line-based) — had to drive it
+  through a real pseudo-tty via a small Python `pty.openpty()` script that
+  watched for the prompt text and wrote `\r`, always accepting "create
+  table" (correct in every case here — these were all genuinely new
+  tables). Worth reusing that approach if another schema change needs a
+  migration generated non-interactively.
+- `src/seed/index.ts` — added a shared `facultyBlock` const (reused across
+  all 6 courses — same institution's faculty) and populated
+  `awardingBody`/`intake`/`highlights`/`benefits`/`careerOpportunities`/
+  `entryRequirements`/`faculty` for **all 6 courses** (ACCA, BBS, CBE,
+  Diploma in IFRS, Cert IFR, BSc Hons). `curriculum` (the by-level papers
+  breakdown) was only added for **ACCA** — its structure is public/
+  well-known; fabricating exact paper-by-paper curricula for the other 5
+  would have been guesswork, so those pages simply don't render a
+  curriculum section (graceful degradation, not a bug).
+
+### Web changes (`apps/web`)
+- `src/components/Icon.astro` — added 8 new icons: `globe`, `monitor`,
+  `briefcase`, `calendar`, `clock`, `layers`, `book`, `check`.
+- `src/components/CourseHeading.astro` — **new** small component (overline
+  label + bold heading, optional subtitle) used only on the two we-offer
+  pages, deliberately *not* a change to the sitewide `SectionHeading.astro`
+  (which still has its ZigZag+centered style and is used elsewhere —
+  homepage, about, etc. — out of scope for this request).
+- `src/data/fallback.ts` — mirrored every new seed field for all 6 courses
+  (so the CMS-offline build path renders the same content). Added a shared
+  `FACULTY_BLOCK` const. The 5 non-ACCA course objects got explicit
+  `curriculum: [] as never[]` / `entryNote: undefined as string | undefined`
+  so all 6 array elements share a uniform shape (avoids TS union-type
+  friction when the template does `course.curriculum.map(...)`).
+- `src/pages/we-offer/[slug].astro` — **rewritten**. Dropped the old
+  2-column content+sidebar layout entirely in favor of the reference's
+  full-width stacked-section layout; the old sidebar's stats
+  (duration/levels/students/passPercentage) now live in the floating info
+  card + highlights band instead. Every new section (`highlights`,
+  `benefits`, `curriculum`, `careerOpportunities`, `entryRequirements`,
+  `faculty`) is wrapped in a `{array.length > 0 && (...)}` guard.
+- `src/pages/we-offer/index.astro` — swapped the shared `SectionHeading`
+  for the new local `CourseHeading` on the three course-category sections
+  (Undergraduate/Diploma/Graduate), for visual consistency with the
+  redesigned detail page. Rest of the page (course-card grids) untouched.
+- **Bug found and fixed** (pre-existing, not introduced by this session —
+  the *original* `we-offer/[slug].astro` hero had the same issue, just
+  unnoticed): `apps/web/src/styles/global.css`'s `@layer base` sets an
+  explicit `color: var(--color-secondary)` directly on every `h1`–`h6`,
+  which beats an ancestor's `text-white` via CSS inheritance (a direct rule
+  on the element always wins over inherited color, regardless of Tailwind
+  layer order). Any heading meant to be white on a dark section needs
+  `text-white` **on the heading itself**, not just the wrapping section —
+  fixed on the hero `<h1>` and closing-CTA `<h2>` in the rewritten
+  `[slug].astro`. Worth checking other dark-background sections sitewide if
+  this pattern comes up again (e.g. homepage CTA banner) — not audited this
+  session since it was out of the requested we-offer-only scope.
+
+### Local dev environment gotcha hit while verifying (also pre-existing, not caused by these changes)
+The committed `apps/cms/cms.db` references media files (e.g.
+`logo-2.png`) that don't exist anywhere on disk in a fresh checkout —
+`apps/cms/media/` is gitignored and was empty, so `/api/media/file/*`
+500'd for every image, including on pages untouched by this session (e.g.
+the homepage). Root cause: `uploadImage()` in the seed script dedupes by
+`sourceKey` and skips re-uploading if a `media` doc with that key already
+exists (see Session 2's idempotency fix above) — so seeding into the
+committed db never actually wrote the local files, since the DB rows were
+already there from whenever this was last seeded against real Vercel Blob
+storage. Worked around **locally, non-destructively** by copying the
+matching source files from `apps/web/public/images/` into
+`apps/cms/media/` under the exact filenames the DB already expected (a
+one-off `sqlite3` query + `cp` loop, both directories/files gitignored —
+nothing committed). If this bites again: either populate `apps/cms/media/`
+the same way, or do a full `rm cms.db* && pnpm seed` from scratch so
+`uploadImage()` actually writes local files this time.
+
+### Verified
+- `apps/cms`: `npx tsc --noEmit` clean, seed script re-run successfully
+  (idempotent, no duplicate media/course docs), new fields confirmed
+  present via direct sqlite query and via the live `/api/courses` REST
+  response.
+- `apps/web`: `astro check` clean (0 errors), `astro build` succeeds **both**
+  against a live CMS and with the CMS unreachable (fallback path) — 29
+  pages built either way, all 6 `/we-offer/<slug>` pages present in both
+  builds' output.
+- Visually checked `/we-offer/acca`, `/we-offer/bbs`, and `/we-offer` (the
+  listing page) in-browser at desktop (1440px) and mobile (~390px) widths
+  via `claude-in-chrome` — hero, floating info card, highlights band, key
+  benefits cards, curriculum-by-level cards, career chips, entry
+  requirements, faculty block, and closing CTA all render correctly and
+  match the reference's structure while using this site's own palette.
+
+### Files touched this session
+```
+apps/cms/src/collections/Courses.ts                          (new fields)
+apps/cms/src/seed/index.ts                                   (new seed data, all 6 courses)
+apps/cms/src/payload-types.ts                                (regenerated)
+apps/cms/src/migrations/20260810_160946_add_course_detail_fields.{ts,json}  (new)
+apps/cms/src/migrations/index.ts                             (registers new migration)
+apps/web/src/components/Icon.astro                           (8 new icons)
+apps/web/src/components/CourseHeading.astro                  (new)
+apps/web/src/data/fallback.ts                                (mirrors new seed data)
+apps/web/src/pages/we-offer/[slug].astro                     (rewritten)
+apps/web/src/pages/we-offer/index.astro                      (heading swap only)
+```
+
+**Pages affected on the live site**: `/we-offer` (listing — heading style
+only) and all six course detail pages under `/we-offer/<slug>` — `acca`,
+`bbs`, `cbe`, `diploma-in-ifrs`,
+`certificate-in-international-financial-reporting-cert-ifr`,
+`bsc-hons-degree-in-applied-accounting`. No other pages were changed.
+
+**Not yet done / next steps if picking this up**: nothing was committed
+this session (per standing instructions, only commit when asked). The new
+migration has been generated but not applied against the production Turso
+db — that still needs `pnpm run migrate` (or the `vercel-build` script,
+which runs it automatically) on the next deploy. `curriculum` content only
+exists for ACCA; if the other 5 courses ever get real published
+paper-by-paper syllabi, add them to both `seed/index.ts` and
+`fallback.ts` the same way.
+
+## Session 3 continued — wired up `@spotlightjs/astro` dev overlay
+User ran `pnpm i @spotlightjs/astro` directly (via `!`), which pnpm refused
+with `ERR_PNPM_ADDING_TO_ROOT` since this is a workspace monorepo. Installed
+it scoped to `apps/web` instead (`pnpm --filter web add @spotlightjs/astro`)
+— the only Astro app in the repo, so unambiguous. User then asked to wire it
+up (register the integration), which surfaced two follow-on runtime issues,
+both now fixed:
+
+1. **`Cannot find module '@sentry/astro'`** at dev-server runtime. Spotlight's
+   injected `page-ssr` script imports `@sentry/astro` directly, but it was
+   only a *peer* dependency resolved into the pnpm store — not hoisted into
+   `apps/web`'s own `node_modules` under pnpm's strict isolation, since
+   `apps/web/package.json` never listed it explicitly. Fixed by
+   `pnpm --filter web add @sentry/astro` (now an explicit dependency).
+2. **Spotlight's own startup warning**: "Could not find Sentry SDK... make
+   sure Sentry plugin is added before Spotlight." Installing the package
+   alone isn't enough — `@sentry/astro`'s own `sentry()` integration has to
+   be registered too (Spotlight uses its SDK locally for the dev error
+   overlay). Fixed in `apps/web/astro.config.mjs`:
+   `integrations: [sentry({ telemetry: false }), spotlightjs()]` — order
+   matters (Sentry before Spotlight).
+3. **Caught proactively (not user-reported)**: even with no DSN configured
+   (so no error data ever leaves the machine), the `sentry-vite-plugin`
+   logs `Sending telemetry data on issues and performance to Sentry` on
+   every dev-server start *and* every `astro build` — separate anonymous
+   build-plugin telemetry, unrelated to actual error reporting. Disabled via
+   the top-level `telemetry: false` option (confirmed via
+   `@sentry/core`'s `BuildTimeOptionsBase` type — the
+   `sourceMapsUploadOptions.telemetry` field also exists but is marked
+   `@deprecated` in favor of this top-level one).
+
+**Verified**: restarted the background dev server (`astro dev stop` +
+`astro dev --background`, per this repo's documented workflow in
+`apps/web/CLAUDE.md`) after each fix and tailed `astro dev logs` to confirm
+a clean startup (no errors, no warnings, no telemetry line) before moving
+on. Also re-ran `astro check` (0 errors) and `astro build` with the CMS
+unreachable (the harder fallback-data path) — both clean, 29 pages built.
+
+**Files touched**: `apps/web/package.json` (added `@spotlightjs/astro`,
+`@sentry/astro`), `apps/web/astro.config.mjs` (integrations array). Nothing
+committed — still sitting as uncommitted changes per standing instructions.

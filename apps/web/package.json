@@ -13,6 +13,8 @@
     "check": "astro check"
   },
   "dependencies": {
+    "@sentry/astro": "^10.70.0",
+    "@spotlightjs/astro": "^3.2.6",
     "@tailwindcss/vite": "^4.3.3",
     "astro": "^7.1.4",
     "sharp": "^0.35.3",

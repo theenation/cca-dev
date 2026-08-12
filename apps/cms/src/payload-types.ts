@@ -223,6 +223,118 @@ export interface Course {
     };
     [k: string]: unknown;
   } | null;
+  /**
+   * e.g. ACCA (UK) — shown in the course info strip
+   */
+  awardingBody?: string | null;
+  /**
+   * e.g. March / June / September / December
+   */
+  intake?: string | null;
+  /**
+   * Stat band shown below the hero, e.g. "170+ countries"
+   */
+  highlights?:
+    | {
+        icon?:
+          | (
+              | 'award'
+              | 'shield'
+              | 'teacher'
+              | 'scholarship'
+              | 'star'
+              | 'users'
+              | 'list'
+              | 'percent'
+              | 'globe'
+              | 'monitor'
+              | 'briefcase'
+              | 'calendar'
+              | 'clock'
+              | 'layers'
+              | 'book'
+              | 'check'
+            )
+          | null;
+        label: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * "Key benefits" card grid
+   */
+  benefits?:
+    | {
+        icon?:
+          | (
+              | 'award'
+              | 'shield'
+              | 'teacher'
+              | 'scholarship'
+              | 'star'
+              | 'users'
+              | 'list'
+              | 'percent'
+              | 'globe'
+              | 'monitor'
+              | 'briefcase'
+              | 'calendar'
+              | 'clock'
+              | 'layers'
+              | 'book'
+              | 'check'
+            )
+          | null;
+        title: string;
+        description: string;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Programme papers grouped by level
+   */
+  curriculum?:
+    | {
+        levelTitle: string;
+        levelSubtitle?: string | null;
+        papers?:
+          | {
+              code: string;
+              title: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  careerOpportunities?:
+    | {
+        title: string;
+        id?: string | null;
+      }[]
+    | null;
+  entryRequirements?:
+    | {
+        title: string;
+        points?:
+          | {
+              text: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Closing paragraph under entry requirements
+   */
+  entryNote?: string | null;
+  faculty?: {
+    description?: string | null;
+    quote?: string | null;
+    name?: string | null;
+    title?: string | null;
+  };
   faqs?:
     | {
         question: string;
@@ -490,6 +602,64 @@ export interface CoursesSelect<T extends boolean = true> {
   levels?: T;
   passPercentage?: T;
   content?: T;
+  awardingBody?: T;
+  intake?: T;
+  highlights?:
+    | T
+    | {
+        icon?: T;
+        label?: T;
+        id?: T;
+      };
+  benefits?:
+    | T
+    | {
+        icon?: T;
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  curriculum?:
+    | T
+    | {
+        levelTitle?: T;
+        levelSubtitle?: T;
+        papers?:
+          | T
+          | {
+              code?: T;
+              title?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  careerOpportunities?:
+    | T
+    | {
+        title?: T;
+        id?: T;
+      };
+  entryRequirements?:
+    | T
+    | {
+        title?: T;
+        points?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  entryNote?: T;
+  faculty?:
+    | T
+    | {
+        description?: T;
+        quote?: T;
+        name?: T;
+        title?: T;
+      };
   faqs?:
     | T
     | {

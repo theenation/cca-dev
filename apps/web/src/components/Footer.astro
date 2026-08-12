@@ -11,13 +11,27 @@ const logoUrl = mediaUrl(settings.logo, '/images/logo-transparent.webp')
 <footer class="bg-secondary text-white">
   <div class="mx-auto grid max-w-7xl gap-10 px-6 py-16 md:grid-cols-3">
     <div>
-      <SmartImage src={logoUrl} alt={settings.siteName} class="h-24 w-auto" />
+      <div class="inline-block rounded-xl bg-white px-3 py-2 shadow-sm">
+        <SmartImage src={logoUrl} alt={settings.siteName} class="h-16 w-auto md:h-20" />
+      </div>
       <p class="mt-4 text-sm italic text-white/70">"{settings.tagline}"</p>
       <div class="mt-6 space-y-3 text-sm text-white/80">
-        <p class="flex items-center gap-3"><Icon name="location" class="h-4 w-4 shrink-0" /> {settings.address}</p>
-        <p class="flex items-center gap-3"><Icon name="mail" class="h-4 w-4 shrink-0" /> {settings.email}</p>
         <p class="flex items-center gap-3">
-          <Icon name="phone" class="h-4 w-4 shrink-0" />
+          <span class="grid h-[34px] w-[34px] shrink-0 place-items-center rounded-lg bg-white/10 text-accent">
+            <Icon name="location" class="h-4 w-4" />
+          </span>
+          {settings.address}
+        </p>
+        <p class="flex items-center gap-3">
+          <span class="grid h-[34px] w-[34px] shrink-0 place-items-center rounded-lg bg-white/10 text-accent">
+            <Icon name="mail" class="h-4 w-4" />
+          </span>
+          {settings.email}
+        </p>
+        <p class="flex items-center gap-3">
+          <span class="grid h-[34px] w-[34px] shrink-0 place-items-center rounded-lg bg-white/10 text-accent">
+            <Icon name="phone" class="h-4 w-4" />
+          </span>
           {settings.phones?.map((p: { number: string }) => p.number).join(' , ')}
         </p>
       </div>
